@@ -1,0 +1,163 @@
+
+IRC Server Summary
+
+| Concept / Component       | Role / Description                           | Example or Usage                    |
+| ------------------------- | -------------------------------------------- | ----------------------------------- |
+|   Socket                  | Communication line between computers         | Created with `socket()`             |
+|   bind()                  | Choose the port to listen on                 | e.g. `bind(:6667)`                  |
+|   listen()                | Start waiting for new client connections     | Listening on port `6667`            |
+|   accept()                | Accept a new client connection               | Returns a client socket             |
+|   Client socket           | Communicates with one connected user         | Used with `recv()` / `send()`       |
+|   poll() / select()       | Monitors all sockets at once                 | Detects new data or disconnects     |
+|   recv()                  | Reads incoming text from a client            | Reads `NICK tom\r\n`                |
+|   send()                  | Sends data back to a client                  | Sends `:server 001 tom :Welcome!`   |
+|   \r\n                    | Marks the end of one IRC message             | Line break for all commands         |
+|   Input buffer            | Stores incomplete data between reads         | Collects partial messages           |
+|   Command parser          | Splits and interprets IRC commands           | Detects `JOIN`, `PRIVMSG`, etc.     |
+|   Nickname → Client map   | Links nicknames to clients for quick lookup  | Needed for `PRIVMSG bob`            |
+|   Channel structure       | Tracks members, topics, and operators        | Used for group chats                |
+|   QUIT / POLLHUP          | Detects when a client disconnects            | Removes user and closes socket      |
+|   PING / PONG   *(opt)*   | Keeps the connection alive                   | Responds to inactivity checks       |
+
+CHECKLIST
+
+| Step | Description     | Example                 |
+| ---- | --------------- | ----------------------- |
+| 1    | Parse args      | `./ircserv 6667 secret` |
+| 2    | Create socket   | Port is open            |
+| 3    | Accept clients  | Connections visible     |
+| 4    | Read input      | Show incoming lines     |
+| 5    | PASS/NICK/USER  | Registration complete   |
+| 6    | PRIVMSG         | Private chat works      |
+| 7    | JOIN/PART       | Channel chat works      |
+| 8    | QUIT/disconnect | Clean exit              |
+| 9    | PING/PONG       | Keep-alive works        | //optional ?!?!
+| 10   | irssi test      | Real client works       |
+
+
+Step 1: Understanding the goal
+
+The project is about building a basic IRC (Internet Relay Chat) server.
+The program that lets multiple clients connect, pick nicknames, 
+join chatrooms (called channels), and exchange text messages.
+
+Step 2: What the program should do
+
+./ircserv <port> <password>
+
+- the server listens to incoming TCP connections on the specified port.
+- each client must send the correct password, nickname, and username befroe beeing accepted
+- once connected, clients can chat privatetly or in channels
+
+Step 3: Prerequisite knowledge
+
+3.1: TCP servers and sockets:
+	-opens a “door” (port) on the computer.
+	-waits for people to “call” (connect).
+	-talks to each connected client using that line.
+
+	-socket() → create a socket (like getting a phone number).
+	-bind() → attach the socket to a port (e.g. 6667).
+	-listen() → start waiting for connections.
+	-accept() → when someone connects, get a new socket to talk to that client.
+
+	[Server]
+		socket() → bind(:6667) → listen()
+	
+	Incoming connections:
+		├── accept() → Client 1 socket  
+		├── accept() → Client 2 socket  
+		└── accept() → Client 3 socket 
+
+	A CLIENT SOCKET is the connection returned by accept() — 
+	used by the server to send and receive data with that specific client.
+
+	-read data the client sends [recv()]
+	-send messages back to that client [send()]
+	-and close the connection when the client leaves
+
+3.2: I/O multiplexing (poll or select)
+
+	A normal program can only “listen” to one thing at a time.
+	But an IRC server needs to handle many clients at once.
+
+	That's what poll() or select() does — it watches many sockets together and tells which ones are ready to:
+
+	-read (someone sent data)
+	-write (can send data now)
+	-closed (client disconnected).
+
+3.3: Reading and writing data (recv / send)
+
+	Once a client is connected, all communication happens through its client socket.
+	Messages in IRC are plain text lines ending with \r\n.
+
+	When data arrives:
+	- the server uses recv() to read from the client socket.
+	- it collects data into a buffer (in case the message arrives in parts).
+	- when a full line ending in \r\n is received, the server processes it.
+
+	To reply:
+	- the server uses send() to send text back.
+	- always end outgoing messages with \r\n.
+
+3.4: String processing
+
+	Because network messages can arrive in pieces or multiple at once,
+	the server needs to:
+
+	- keep an input buffer for each client.
+	- append new data from recv() to that buffer.
+	- split complete commands using \r\n.
+	- process each complete command.
+	- keep any leftover (incomplete) data for the next recv() call.
+
+Step 4: Handling IRC commands
+
+	Once the server can read full messages, it needs to understand them.
+	
+	In the IRC protocol, every line that the client sends to the server is called a command.
+
+	| Command line                           | Meaning                                         |
+	| -------------------------------------- | ----------------------------------------------- |
+	| `PASS secret\r\n`                      | Send server password “secret”                   |
+	| `NICK tom\r\n`                         | Set nickname to “tom”                           |
+	| `USER tom 0 * :Tom Meniga\r\n`         | Set username and real name                      |
+	| `JOIN #vienna\r\n`                     | Join the channel `#vienna`                      |
+	| `PRIVMSG #vienna :Hello everyone!\r\n` | Send “Hello everyone!” to everyone in `#vienna` |
+	| `QUIT :Goodbye!\r\n`                   | Disconnect with a message                       |
+
+4.1: Most basic commands  (Goal: Clients can register successfully)
+
+	- PASS <password>
+	- NICK <nickname>
+	- USER <username> 0 * :Realname
+
+	Each client must send all three (in any order) before being fully registered.
+
+	After registration, send:
+		:irc.local 001 <nick> :Welcome to the IRC server!
+
+4.2: Private messages (Goal: Two users can exchange private messages)
+
+	- PRIVMSG <target> :message
+
+	If <target> is a nickname, send the message to that user.
+	Keep a map of nickname → client (server can quickly find client using a given nickname)
+
+4.3: Channels/Chatrooms (Goal: Group chat functionality works)
+
+	- JOIN #room
+    - PRIVMSG #room :hello everyone
+	- PART #room
+
+	- Create a channel if it doesn't exist
+	- Add users to the channel's member list
+	- Broadcast messages to all channel members (except the sender)
+
+Step 5: Disconnects (Goal: Server handles disconnections)
+
+	- Handle QUIT, closed sockets, and POLLHUP.
+	- Remove users from channels.
+	- Cleanly delete client data.
+
