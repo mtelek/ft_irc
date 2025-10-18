@@ -8,6 +8,9 @@
 #include <arpa/inet.h>  // for sockaddr_in, inet_ntoa()
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <vector>
+#include <poll.h>
+ #include <fcntl.h>
 
 class server 
 {
@@ -32,10 +35,11 @@ class server
 
     int     init(int port, std::string password);
 
-
     //# RUN SERVER
     //# 1. LISTENING FOR CONNECTIONS
     //# 2. ACCEPTING CONNECTIONS
+
+    void    run();
 };
 
 #endif
