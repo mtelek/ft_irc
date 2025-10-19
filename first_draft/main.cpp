@@ -2,7 +2,7 @@
 #include "server.hpp"
 
 
-//# USAGE: run ./irc and in another therminal run "nc localhost 6667"
+//# USAGE: run ./irc password port and in another therminal run "nc localhost 6667"
 
 int	main(int argc, char **argv)
 {

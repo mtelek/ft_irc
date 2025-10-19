@@ -84,6 +84,7 @@ void    server::run()
     server_poll.revents = 0;
     fds.push_back(server_poll);
 
+
     //# MAIN SERVER LOOP
     while (true)
     {
@@ -109,6 +110,10 @@ void    server::run()
                 client_poll.revents = 0;
                 fds.push_back(client_poll);
 
+                //# safe clients in container clients_
+
+
+
                 std::cout << "New client connected: IP = " << inet_ntoa(client_addr.sin_addr) << "port = "
                 << ntohs(client_addr.sin_port) << "FD = " << client_fd << std::endl;
             }
@@ -131,6 +136,11 @@ void    server::run()
                 {
                     buffer[bytes] = '\0';
                     std::cout << "Client (" << fds[i].fd << "): " << buffer << std::endl;
+
+                    //# parse(buffer)
+
+                    //# execute()
+
                     send(fds[i].fd, buffer, bytes, 0);  // echo back
                 }
             }

@@ -23,16 +23,16 @@ CHECKLIST
 
 | Step | Description     | Example                 |
 | ---- | --------------- | ----------------------- |
-| 1    | Parse args      | `./ircserv 6667 secret` |
-| 2    | Create socket   | Port is open            |
-| 3    | Accept clients  | Connections visible     |
-| 4    | Read input      | Show incoming lines     |
-| 5    | PASS/NICK/USER  | Registration complete   |
-| 6    | PRIVMSG         | Private chat works      |
-| 7    | JOIN/PART       | Channel chat works      |
-| 8    | QUIT/disconnect | Clean exit              |
+| 1    | Parse args      | `./ircserv 6667 secret` |	+
+| 2    | Create socket   | Port is open            |	+
+| 3    | Accept clients  | Connections visible     |	+
+| 4    | Read input      | Show incoming lines     |	+
+| 5    | PASS/NICK/USER  | Registration complete   |	-
+| 6    | PRIVMSG         | Private chat works      |	-
+| 7    | JOIN/PART       | Channel chat works      |	-
+| 8    | QUIT/disconnect | Clean exit              |	-
 | 9    | PING/PONG       | Keep-alive works        | //optional ?!?!
-| 10   | irssi test      | Real client works       |
+| 10   | irssi test      | Real client works       |	-
 
 
 Step 1: Understanding the goal

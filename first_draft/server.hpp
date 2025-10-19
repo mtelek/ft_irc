@@ -10,7 +10,8 @@
 #include <netinet/in.h>
 #include <vector>
 #include <poll.h>
- #include <fcntl.h>
+#include <fcntl.h>
+#include <map>
 
 class server 
 {
@@ -20,25 +21,36 @@ class server
         sockaddr_in     server_addr_;    
         int             port_;
         std::string     password_;
+
+        // struct Client 
+        // {
+        //     int fd;
+        //     int port;
+        //     std::string hostname; //ip
+        //     std::string nickname;
+        //     std::string realname;
+        //     std::string password;
+        //     std::string buffer;
+        //     bool isRegisterd;
+        //     bool hasPassword;
+        //     bool hasDisconected;
+        // }
+
+        // std::map <int, Client> clients_;               // fd -> client
+        // std::map <std::string, int> nickname2fd        // nickname -> fd
+        
+        // struct  Room
+        // {
+                // std::map <int, Client> clients_room_;
+                // bool isinvte;
+        // }
+
     
     public:
         server();
         ~server();
 
-    //# INITIALIZE SERVER
-    //# 1. CREATING SOCKET
-    //# 2. SETTING UP THE ADDRESS
-    //# 3. BINDING THE SOCKET TO ADDRESS
-
-    //# GOAL: after calling init all the the server variables are intialized
-    //# and the server socket is bound to given port (server does not listen() yet)!
-
     int     init(int port, std::string password);
-
-    //# RUN SERVER
-    //# 1. LISTENING FOR CONNECTIONS
-    //# 2. ACCEPTING CONNECTIONS
-
     void    run();
 };
 
