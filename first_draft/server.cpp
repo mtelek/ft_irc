@@ -12,6 +12,7 @@ int     server::init(int port, std::string password)
 
 	port_ = port;
 	password_ = password;
+	startDate = getStartDate();
 
 	//# CREATE A TCP SOCKET
 
@@ -62,6 +63,7 @@ void server::initClient(int client_fd, sockaddr_in client_addr)
 
 	client.hostname = inet_ntoa(client_addr.sin_addr);
 	client.port = ntohs(client_addr.sin_port);
+	client.nickname = "client";
 	std::cout << "Client connected from: " << client.hostname << ":" << client.port << std::endl;
 }
 
