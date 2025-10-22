@@ -27,11 +27,11 @@ CHECKLIST
 | 2    | Create socket   | Port is open            |	+
 | 3    | Accept clients  | Connections visible     |	+
 | 4    | Read input      | Show incoming lines     |	+
-| 5    | PASS/NICK/USER  | Registration complete   |	-
-| 6    | PRIVMSG         | Private chat works      |	-
+| 5    | PASS/NICK/USER  | Registration complete   |	+
+| 6    | PRIVMSG         | Private chat works      |	-  next up
 | 7    | JOIN/PART       | Channel chat works      |	-
-| 8    | QUIT/disconnect | Clean exit              |	-
-| 9    | PING/PONG       | Keep-alive works        | //optional ?!?!
+| 8    | QUIT/disconnect | Clean exit              |	+
+| 9    | PING/PONG       | Keep-alive works        | //optional ?!?! no need
 | 10   | irssi test      | Real client works       |	-
 
 
