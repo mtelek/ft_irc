@@ -140,13 +140,12 @@ void    server::run()
 					fds.erase(fds.begin() + i);
 					i--;
 				}
-				else
-					if (recieveMessage(fds, i, buffer, bytes) == -1)
-					{
-						close(fds[i].fd);
-						fds.erase(fds.begin() + i);
-						i--;
-					}
+				else if (recieveMessage(fds, i, buffer, bytes) == -1)
+				{
+					close(fds[i].fd);
+					fds.erase(fds.begin() + i);
+					i--;
+				}
 			}
 		}
 	}

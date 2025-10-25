@@ -30,6 +30,7 @@ CHECKLIST
 | 5    | PASS/NICK/USER  | Registration complete   |	+
 | 6    | PRIVMSG         | Private chat works      |	-  next up
 | 7    | JOIN/PART       | Channel chat works      |	-
+| 7    | SIGHANDLER      |                         |	-
 | 8    | QUIT/disconnect | Clean exit              |	+
 | 9    | PING/PONG       | Keep-alive works        | //optional ?!?! no need
 | 10   | irssi test      | Real client works       |	-

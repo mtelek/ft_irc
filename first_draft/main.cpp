@@ -9,6 +9,8 @@ int	main(int argc, char **argv)
 	(void) argc;
 	(void) argv;
 
+	std::cout << "Server PID: " << getpid() << std::endl;
+
 	// if (argc != 3)
 	// {
 	// 	std::cerr << "Usage: ./irc <port> <password>" << std::endl;

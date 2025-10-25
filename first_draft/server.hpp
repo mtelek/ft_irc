@@ -20,6 +20,7 @@
 #include "error_messages.hpp"
 #include <ctime>         // for time and localtime
 #include <iomanip>		// for setw and setfill
+#include <set>
 
 class server 
 {
@@ -56,11 +57,22 @@ class server
 		std::map <int, Client> clients_;               // fd -> client
 		// std::map <std::string, int> nickname2fd        // nickname -> fd
 		
-		// struct  Room
-		// {
-				// std::map <int, Client> clients_room_;
-				// bool isinvte;
-		// }
+		struct  Channel
+		{
+				std::string name;		// hast to start with '#'
+				std::string topic;		// optional;
+
+				std::set<int>			members;
+				std::set<int>			operators;
+				std::set<std::string>	invited;
+				
+				bool			isInviteOnly;	// +i
+				bool			isTopicLocked;	// +t
+				int				userLimit;		// +l (0 = no limit)
+				std::string		key;		// +k
+		};
+
+		std::map <std::string, Channel> channels_;
 
 		//INIT
 		void	initClient(int client_fd, sockaddr_in client_addr);
@@ -68,10 +80,19 @@ class server
 		int		recieveMessage(std::vector<pollfd> fds, size_t i, char *buffer, ssize_t bytes);
 
 		//COMMANDS
-		int		authenticate(Client &client, std::istringstream &iss);
-		void	setNick(Client &client, std::istringstream &iss);
-		void	setUser(Client &client, std::istringstream &iss);
-		int		quit(Client &client, std::istringstream &iss);
+		int		authenticate(Client &client, std::istringstream &iss);		//# PASS
+		void	setNick(Client &client, std::istringstream &iss);			//# NICK
+		void	setUser(Client &client, std::istringstream &iss);			//# USER
+		int		quit(Client &client, std::istringstream &iss);				//# QUIT
+		int		join(Client &client, std::istringstream &iss);				//# JOIN
+		// int		part(Client &client, std::istringstram &iss);				//# PART
+		// int		topic(Client &client, std::istringstram &iss);				//# TOPIC
+		// int		mode(Client &client, std::istringstram &iss);				//# MODE
+		// int		kick(Client &client, std::istringstram &iss);				//# KICK
+		// int		invite(Client &client, std::istringstram &iss);				//# INVITE
+
+		//CHANNEL HELPER
+		int		initChannel(int fd, Channel& channel);
 
 		//HELPER
 		bool	maxAttemptsReached(Client &client);

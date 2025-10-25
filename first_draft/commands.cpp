@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
+/*   By: tmeniga@student.42vienna.com <tmeniga>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 16:14:43 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/22 23:07:25 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/25 20:52:29 by tmeniga@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,6 +231,7 @@ void server::sendPrivate(Client &client, std::istringstream &iss)
 	}
 }
 
+
 int server::executeCommands(int client_fd, const std::string& command)
 {
 	Client& client = clients_[client_fd];
@@ -257,6 +258,10 @@ int server::executeCommands(int client_fd, const std::string& command)
 	{
 		sendPrivate(client, iss);
 	}
+	else if (cmd == "JOIN")
+	{
+		join(client, iss);
+	}
 	else
 	{
 		//INVALID COMMAND
@@ -273,7 +278,7 @@ int	server::recieveMessage(std::vector<pollfd> fds, size_t i, char *buffer, ssiz
 	Client& client = clients_[fds[i].fd];
 	client.buffer += std::string(buffer, bytes);
 	
-	int j;
+	int j = 0;
 	size_t pos;
 	if ((pos = client.buffer.find("\r\n")) != std::string::npos)
 		j = 2;
