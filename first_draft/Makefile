@@ -1,6 +1,6 @@
 NAME = irc.exe
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++98
 SRC = main.cpp server.cpp commands.cpp commands2.cpp
 OBJ_DIR = .objs
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.cpp=.o))
