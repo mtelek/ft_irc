@@ -9,7 +9,6 @@ server::~server() {}
 
 int     server::init(int port, std::string password)
 {
-
 	port_ = port;
 	password_ = password;
 	startDate = getStartDate();
@@ -62,13 +61,13 @@ void server::initClient(int client_fd, sockaddr_in client_addr)
 	std::cout << formatDate()  << "Client#" << client.fd << " connected from: " << client.hostname << ":" << client.port << std::endl;
 }
 
-std::atomic<bool> server::running_(true);
+volatile sig_atomic_t server::running_ = 1;
 
 void    server::run()
 {
 	//SET UP SIGHANDLER
-	std::signal(SIGINT, server::sigHandler);
-	std::signal(SIGTERM, server::sigHandler);
+	signal(SIGINT, server::sigHandler);		// Ctrl+C
+	signal(SIGTERM, server::sigHandler);	// Termination
 
 	//# START LISTENING (Allow up to 128 pending connections that haven’t been accepted yet)
 	if(listen(server_fd_, 128) == -1)
@@ -138,7 +137,7 @@ void    server::run()
 				ssize_t bytes = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
 				if (bytes <= 0)
 				{
-					std::cout << formatDate() << "Client disconnected: FD = " << fds[i].fd << std::endl;
+					std::cout << formatDate() << "Client#" << fds[i].fd << " disconnected\n";
 					close(fds[i].fd);
 					clients_.erase(fds[i].fd);
 					fds.erase(fds.begin() + i);

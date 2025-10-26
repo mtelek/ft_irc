@@ -23,7 +23,6 @@
 #include <iomanip>		 // for setw and setfill
 #include <signal.h>      // for sighandler
 #include <set>
-#include <atomic>
 #include <csignal>      // For signal handling
 #include <cerrno>
 
@@ -38,7 +37,7 @@ class server
 		std::string		startDate;
 
 		//SIGHANDLER
-		static std::atomic<bool> running_;
+		static volatile sig_atomic_t running_;
 
 		struct Client 
 		{

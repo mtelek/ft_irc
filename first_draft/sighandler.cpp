@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:47:49 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 17:47:12 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 18:22:32 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void server::sigHandler(int signal)
 {
     (void)signal;
     std::cout << "\n" << formatDate() << "Received shutdown signal. Cleaning up..." << std::endl;
-    running_ = false;
+    running_ = 0;
 }
 
 void server::cleanUp()
