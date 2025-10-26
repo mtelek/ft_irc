@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 16:14:43 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 17:56:15 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 18:31:46 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int server::quit(Client &client, std::istringstream &iss)
 
 	//DISCONNECT CLIENT
 	std::cout << formatDate() << "Client#" << client.fd << " -> QUIT " << reason << std::endl;
+	std::cout << formatDate() << "Client#" << client.fd << " disconnected\n";
 	std::string success = S410(std::string(SERV), client.nickname);
 	send(client.fd, success.c_str(), success.length(), 0);
 	close(client.fd);

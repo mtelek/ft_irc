@@ -6,11 +6,16 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:23:54 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 16:24:31 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 18:37:26 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.hpp"
+
+bool server::isValidLength(const std::string& str, size_t maxLength)
+{
+	return (str.length() <= maxLength);
+}
 
 std::string server::trim(const std::string& str)
 {

@@ -2,8 +2,3 @@ https://modern.ircdocs.horse/#rplmyinfo-004
 
 //AFTER IMPLEMENTING CHANNNEL PART
 When the PRIVMSG message is sent from a server to a client and <target> starts with a dollar character ('$', 0x24), the message is a broadcast sent to all clients on one or multiple servers.
-
-//QUIT
-quit doesnt work
-
-//client deletion correct?

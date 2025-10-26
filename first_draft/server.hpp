@@ -110,6 +110,7 @@ class server
 		void	checkRegistration(Client &client);
 		void	sendWelcome(Client &client);
 		bool	isValidName(Client &client, std::string &nickname);
+		bool	isValidLength(const std::string& str, size_t maxLength);
 		static std::string	getStartDate();
 		std::string toLowerString(const std::string& str);
 

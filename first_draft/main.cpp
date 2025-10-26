@@ -1,6 +1,4 @@
-#include "helper.hpp"
 #include "server.hpp"
-
 
 //# USAGE: run ./irc password port and in another therminal run "nc localhost 6667"
 

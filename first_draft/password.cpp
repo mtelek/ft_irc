@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:18:56 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 17:56:19 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 18:54:31 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int server::authenticate(Client &client, std::istringstream &iss)
 	}
 	else if (password.empty())
 	{
+		//INVALID - EMPTY PASSWORD
 		std::cout << formatDate() << "Client#" << client.fd << " -> PASS \n";
 		std::string error = E461(std::string(SERV), client.nickname, "PASS");
 		send(client.fd, error.c_str(), error.length(), 0);
@@ -57,6 +58,7 @@ int server::authenticate(Client &client, std::istringstream &iss)
 			std::string disconnect_msg = E4642(std::string(SERV), client.nickname);
 			send(client.fd, disconnect_msg.c_str(), disconnect_msg.length(), 0);
 			close(client.fd);
+			std::cout << formatDate() << "Client#" << client.fd << " disconnected\n";
 			return (-1);
 		}
 		else

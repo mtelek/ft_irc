@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:20:11 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 16:20:37 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 18:54:04 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 bool server::isNameTaken(std::string Client::* member, const std::string& name)
 {
+	//CHECKING ALREADY TAKEN NAMES
 	std::string lowerName = toLowerString(name);
 	for (std::map<int, Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
 	{
@@ -43,7 +44,7 @@ bool server::isValidName(Client &client, std::string &nickname)
 			return (false);
 		}
 	}
-	if (nickname[0] == '$' || nickname[0] == ':')
+	if (nickname[0] == '$' || nickname[0] == ':' || !isValidLength(nickname, 9))
 	{
 		//FORBIDDEN CHARACTERS
 		std::string error = E432(std::string(SERV), client.nickname);
@@ -58,7 +59,7 @@ bool server::isValidName(Client &client, std::string &nickname)
 		send(client.fd, error.c_str(), error.length(), 0);
 		return (false);
 	}
-	if (nickname.find('.') != std::string::npos)
+	else if (nickname.find('.') != std::string::npos)
 	{
 		//WARNING - DOT SHOULDNT BE USED
 		std::string warning = E4322(std::string(SERV), client.nickname);
@@ -86,6 +87,7 @@ void server::setNick(Client &client, std::istringstream &iss)
 		//CAN SET NICKNAME - PASSWORD VALID
 		if (isNameTaken(&Client::nickname, nickname) == true)
 		{
+			//NICKNAME TAKEN
 			std::string error = E433(std::string(SERV), client.nickname);
 			send(client.fd, error.c_str(), error.length(), 0);
 		}
@@ -93,6 +95,7 @@ void server::setNick(Client &client, std::istringstream &iss)
 			return ;
 		else
 		{
+			//VALID NICKNAME
 			client.nickname = nickname;
 			client.hasNick = true;
 			std::string success = S433(std::string(SERV), client.nickname);
