@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 16:14:43 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 02:00:23 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 16:04:28 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,8 @@ int server::authenticate(Client &client, std::istringstream &iss)
 std::string server::toLowerString(const std::string& str)
 {
 	std::string lower = str;
-	for (char &c : lower)
-		c = std::tolower(c);
+	for (std::string::iterator it = lower.begin(); it != lower.end(); ++it)
+		*it = std::tolower(*it);
 	return (lower);
 }
 
