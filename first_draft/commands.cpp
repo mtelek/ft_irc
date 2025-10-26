@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 16:14:43 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 18:31:46 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 20:35:35 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,28 @@ void	server::checkRegistration(Client &client)
 	}
 }
 
+void server::cap(Client &client, std::istringstream &iss)
+{
+	std::string subcmd;
+	iss >> subcmd;
+	
+	if (subcmd == "LS")
+	{
+		// Send minimal capabilities or none
+		std::string response = "CAP * LS :\r\n";
+		send(client.fd, response.c_str(), response.length(), 0);
+	}
+	else if (subcmd == "REQ")
+	{
+		// Acknowledge any requested capabilities
+		std::string caps;
+		std::getline(iss, caps);
+		std::string response = "CAP * ACK " + caps + "\r\n";
+		send(client.fd, response.c_str(), response.length(), 0);
+	}
+	else if (subcmd == "END") {}
+}
+
 int server::executeCommands(int client_fd, const std::string& command)
 {
 	Client& client = clients_[client_fd];
@@ -58,7 +80,11 @@ int server::executeCommands(int client_fd, const std::string& command)
 	std::string cmd;
 	iss >> cmd;
 
-	if (cmd == "PASS")
+	if (cmd == "CAP")
+	{
+		cap(client, iss);
+	}
+	else if (cmd == "PASS")
 	{
 		if (authenticate(client, iss) == -1)
 			return (-1);
@@ -78,7 +104,8 @@ int server::executeCommands(int client_fd, const std::string& command)
 	}
 	else if (cmd == "JOIN")
 	{
-		join(client, iss);
+		//commented out to test irssi till join isnt ready
+		//join(client, iss);
 	}
 	else
 	{
@@ -87,6 +114,7 @@ int server::executeCommands(int client_fd, const std::string& command)
 		send(client.fd, error.c_str(), error.length(), 0);
 	}
 	checkRegistration(client);
+	client.buffer.clear();
 	return (0);
 }
 

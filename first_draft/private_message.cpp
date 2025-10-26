@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:22:22 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 16:22:44 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 20:26:52 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void server::sendPrivate(Client &client, std::istringstream &iss)
 	if (target_fd != -1 && !message.empty())
 	{
 		//VALID TARGET ANDD MESSAGE
-		std::string new_message = ":" + client.nickname + " PRIVMSG " + target_nick + " :" + message + "\n";
+		std::string new_message = ":" + client.nickname + " PRIVMSG " + target_nick + " :" + message + "\r\n";
 		send(target_fd, new_message.c_str(), new_message.length(), 0);
 		std::string success = S465(std::string(SERV), client.nickname);
 		send(client.fd, success.c_str(), success.length(), 0);

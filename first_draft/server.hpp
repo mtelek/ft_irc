@@ -94,6 +94,7 @@ class server
 		void	setUser(Client &client, std::istringstream &iss);			//# USER
 		int		quit(Client &client, std::istringstream &iss);				//# QUIT
 		int		join(Client &client, std::istringstream &iss);				//# JOIN
+		void	cap(Client &client, std::istringstream &iss);				//# CAP
 		// int		part(Client &client, std::istringstram &iss);				//# PART
 		// int		topic(Client &client, std::istringstram &iss);				//# TOPIC
 		// int		mode(Client &client, std::istringstram &iss);				//# MODE
