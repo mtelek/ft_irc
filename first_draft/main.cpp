@@ -9,7 +9,8 @@ int	main(int argc, char **argv)
 	(void) argc;
 	(void) argv;
 
-	std::cout << "Server PID: " << getpid() << std::endl;
+	server server;
+	std::cout << server.formatDate() << "Server PID: " << getpid() << std::endl;
 
 	// if (argc != 3)
 	// {
@@ -23,7 +24,6 @@ int	main(int argc, char **argv)
 	int port = 6667;
 	std::string password = "i<3feet";
 
-	server server;
 	if (server.init(port, password) == -1)
 		return (1);
 

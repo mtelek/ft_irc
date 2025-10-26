@@ -2,7 +2,7 @@ NAME = irc.exe
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 SRC = main.cpp server.cpp commands.cpp commands2.cpp commands_helper.cpp \
-		 nickname.cpp password.cpp private_message.cpp username.cpp
+		 nickname.cpp password.cpp private_message.cpp username.cpp sighandler.cpp
 OBJ_DIR = .objs
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.cpp=.o))
 DEPS = server.hpp error_messages.hpp

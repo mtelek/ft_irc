@@ -6,6 +6,7 @@
 #define MAX_PASS_ATTEMPTS 3
 #define SERV ":server.1"
 
+#include "error_messages.hpp"
 #include <iostream>
 #include <cstring>      // for memset
 #include <cstdlib>      // for exit()
@@ -18,10 +19,13 @@
 #include <fcntl.h>
 #include <map>
 #include <sstream>
-#include "error_messages.hpp"
 #include <ctime>         // for time and localtime
-#include <iomanip>		// for setw and setfill
+#include <iomanip>		 // for setw and setfill
+#include <signal.h>      // for sighandler
 #include <set>
+#include <atomic>
+#include <csignal>      // For signal handling
+#include <cerrno>
 
 class server 
 {
@@ -32,6 +36,9 @@ class server
 		int             port_;
 		std::string     password_;
 		std::string		startDate;
+
+		//SIGHANDLER
+		static std::atomic<bool> running_;
 
 		struct Client 
 		{
@@ -98,19 +105,22 @@ class server
 		int		initChannel(int fd, std::string& name);
 		// int		addUser(int fd, Channel& channel);
 
-		//HELPER
+		//USER HELPER
 		bool	maxAttemptsReached(Client &client);
 		bool	isNameTaken(std::string Client::* member, const std::string& name);
 		void	checkRegistration(Client &client);
 		void	sendWelcome(Client &client);
 		bool	isValidName(Client &client, std::string &nickname);
-		std::string	getStartDate();
-		std::string formatDate();
+		static std::string	getStartDate();
 		std::string toLowerString(const std::string& str);
 
 		//SENDING MESSAGE COMMANDS
 		void		sendPrivate(Client &client, std::istringstream &iss);
 		std::string	trim(const std::string& str);
+
+		//SIGHANDLER
+		static void	sigHandler(int signal);
+		void	cleanUp();
 
 	public:
 		server();
@@ -118,6 +128,7 @@ class server
 
 	int     init(int port, std::string password);
 	void    run();
+	static std::string formatDate();
 };
 
 #endif

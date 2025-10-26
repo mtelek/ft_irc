@@ -15,21 +15,18 @@ int     server::init(int port, std::string password)
 	startDate = getStartDate();
 
 	//# CREATE A TCP SOCKET
-
 	server_fd_ = socket(AF_INET, SOCK_STREAM, 0);
 	if (server_fd_ == -1)
 	{
-		std::cerr << "Error: cannot create socket" << std::endl;
+		std::cerr << formatDate() << "Error: cannot create socket" << std::endl;
 		return (-1);
 	}
 
 	//# ALLOW QUICK REUSE OF THE SAME PORT AFTER SERVER RESTART
-
 	int opt = 1;
 	setsockopt(server_fd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
 	//# SET UP THE SERVER ADDRESS (LISTEN IN ALL INTERFACES ON CHOSEN PORT)
-
 	std::memset(&server_addr_, 0, sizeof(server_addr_));
 	server_addr_.sin_family = AF_INET;
 	server_addr_.sin_port = htons(port_);
@@ -38,15 +35,13 @@ int     server::init(int port, std::string password)
 	//# BIND SOCKET TO THE CONFIGURED IP AND PORT
 	// configured ip = INADDR_ANY = all available network interfaces on this computer
 	// port = given port by user
-
 	if (bind(server_fd_, (struct sockaddr*)&server_addr_, sizeof(server_addr_)) == -1) 
 	{
-		std::cerr << "Error: cannot bind socket" << std::endl;
+		std::cerr << formatDate() << "Error: cannot bind socket" << std::endl;
 		close(server_fd_);
 		return (-1);
 	}
-
-	std::cout << "Socket successfully created and bound on port " << port << std::endl;
+	std::cout << formatDate() << "Socket successfully created and bound on port " << port << std::endl;
 	return (0);
 }
 
@@ -64,21 +59,25 @@ void server::initClient(int client_fd, sockaddr_in client_addr)
 	client.hostname = inet_ntoa(client_addr.sin_addr);
 	client.port = ntohs(client_addr.sin_port);
 	client.nickname = "client";
-	std::cout << "Client connected from: " << client.hostname << ":" << client.port << std::endl;
+	std::cout << formatDate()  << "Client#" << client.fd << " connected from: " << client.hostname << ":" << client.port << std::endl;
 }
 
-void    server::run()
-{   
-	//# START LISTENING (Allow up to 128 pending connections that haven’t been accepted yet)
+std::atomic<bool> server::running_(true);
 
+void    server::run()
+{
+	//SET UP SIGHANDLER
+	std::signal(SIGINT, server::sigHandler);
+	std::signal(SIGTERM, server::sigHandler);
+
+	//# START LISTENING (Allow up to 128 pending connections that haven’t been accepted yet)
 	if(listen(server_fd_, 128) == -1)
 	{
-		std::cerr << "Error: cannot listen on socket" << std::endl;
+		std::cerr << formatDate() << "Error: cannot listen on socket" << std::endl;
 		close(server_fd_);
 		return ;
 	}
-
-	std::cout << "Server listening in port " << port_ << std::endl;
+	std::cout << formatDate()  << "Server listening in port " << port_ << std::endl;
 
 	//# MAKE SERVER SOCKET NON-BLOCKING (Instantly returns instead of holding up programm)
 	fcntl(server_fd_, F_SETFL, O_NONBLOCK);
@@ -99,13 +98,15 @@ void    server::run()
 	server_poll.revents = 0;
 	fds.push_back(server_poll);
 
-	//# MAIN SERVER LOOP
-	while (true)
+	// MAIN SERVER LOOP
+	while (running_)
 	{
 		int x = poll(&fds[0], fds.size(), -1);
-		if (x < 0)
+		if (!running_)
+			break;
+		else if (x < 0)
 		{
-			std::cerr << "Error: poll() failed" << std::endl;
+			std::cerr << formatDate() << "Error: poll() failed" << std::endl;
 			break;
 		}
 
@@ -129,26 +130,30 @@ void    server::run()
 
 		for (size_t i = 1; i < fds.size(); i++)
 		{
+			if (!running_)
+				break;
 			if (fds[i].revents & POLLIN)
 			{
 				char buffer[1024];
 				ssize_t bytes = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
 				if (bytes <= 0)
 				{
-					std::cout << "Client disconnected: FD = " << fds[i].fd << std::endl;
+					std::cout << formatDate() << "Client disconnected: FD = " << fds[i].fd << std::endl;
 					close(fds[i].fd);
+					clients_.erase(fds[i].fd);
 					fds.erase(fds.begin() + i);
 					i--;
 				}
 				else if (recieveMessage(fds, i, buffer, bytes) == -1)
 				{
 					close(fds[i].fd);
+					clients_.erase(fds[i].fd);
 					fds.erase(fds.begin() + i);
 					i--;
 				}
 			}
 		}
 	}
-	close(server_fd_);
+	cleanUp();
 }
 
