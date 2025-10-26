@@ -6,46 +6,50 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 18:48:29 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/22 22:30:52 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 01:42:57 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 //AUTHENTICATE PASSWORD
-#define E464(nick) nick + " :Password incorrect\r\n"
-#define E4642(nick) nick + " :Password incorrect. Disconnecting\r\n"
-#define S464(nick) nick + " : Authentication successful\r\n"
+#define E464(serv,nick)  serv + " 464 " + nick + " :Password incorrect\r\n"
+#define E4642(serv,nick) serv + " 4642 " + nick + " :Password incorrect. Disconnecting\r\n"
+#define S464(serv,nick) serv + " 464 " + nick + " :Authentication successful\r\n"
+#define E462(serv,nick) serv + " 462 " + nick + " :You may not reregister\r\n"
 
 //SETNICK
-#define E433(nick) nick + " :Nickname is already in use\r\n"
-#define E431(nick) nick + " :No nickname given\r\n"
-#define S433(nick) nick + " :Nickname set to " + nick + " \r\n"
-#define E4643(nick) nick + " :Authentication required\r\n"
+#define E433(serv,nick) serv + " 433 " + nick + " :Nickname is already in use\r\n"
+#define E431(serv,nick) serv + " 431 " + nick + " :No nickname given\r\n"
+#define S433(serv, nick) serv + " 433 " + nick + " :Nickname set to " + nick + " \r\n"
+#define E4643(serv,nick) serv + " 4643 " + nick + " :Authentication required\r\n"
+#define E432(serv,nick) serv + " 432 " + nick + " :Erroneous nickname\r\n"
+#define E4322(serv,nick) serv + " 4322 " + nick + " :Warning: Erroneous nickname\r\n"
+#define  E431(serv,nick) serv + " 431 " + nick + " :No nickname given\r\n"
 
 //QUIT
-#define S410(nick) nick + " :Disconnected\r\n"
+#define S410(serv,nick) serv + " 410 " + nick +" :Disconnected\r\n"
 
 //SETUSER
-#define S411(nick, user) nick + " :Username set to " + user + "\r\n"
-#define S412(nick, real) nick + " :Realname set to " + real + "\r\n"
+#define S411(serv, nick, user) serv + " 411 " + nick + " :Username set to " + user + "\r\n"
+#define S412(serv, nick, real) serv + " 412 " + nick + " :Realname set to " + real + "\r\n"
 
 //EXECUTE COMMANDDS
-#define E461(nick, cmd) nick + " :" + cmd + " :Not enough parameters\r\n"
-#define E463(nick, cmd) nick + " :" + cmd + " :Invalid command\r\n"
+#define E461(serv, nick, cmd) serv + " 461 " + nick + " :" + cmd + " :Not enough parameters\r\n"
+#define E463(serv, nick, cmd) serv + " 463 " + nick + " :" + cmd + " :Invalid command\r\n"
 
 //SENDPRIVATE
-#define S465(nick) nick + " :Message sent\r\n"
-#define E412(nick) nick + " :No text to send\r\n"
-#define E401(nick, target) nick + " :" + target + " :No such nick/channel\r\n"
+#define S465(serv,nick) serv + " 465 " + nick + " :Message sent\r\n"
+#define E412(serv,nick) serv + " 412 " + nick + " :No text to send\r\n"
+#define E401(serv, nick, target) serv + " 401 " + nick + " :" + target + " :No such nick/channel\r\n"
 
 //CLIENT WELCOME MESSAGE
-#define RPL_WELCOME(nick, server, user, host) nick + " :Welcome to the " + server + " Network, " + nick + "[!" + user + "@" + host + "]\r\n"
-#define RPL_YOURHOST(nick, server, version) nick + " :Your host is " + server + " running version " + version + "\r\n"
-#define RPL_CREATED(nick, date) nick + " :This server was created " + date + "\r\n"
-#define RPL_MYINFO(nick, server, version) nick + " :" + server + " " + version + " 0 0\r\n"  //might wanna change it after impleemnted channels
-
-
+#define RPL_WELCOME(serv, nick, server, user, host) serv + " :Welcome to the " + server + " Network, " + nick + "[!" + user + "@" + host + "]\r\n"
+#define RPL_YOURHOST(serv, server, version) serv + " :Your host is " + server + " running version " + version + "\r\n"
+#define RPL_CREATED(serv, date) serv + " :This server was created " + date + "\r\n"
+#define RPL_MYINFO(serv, server, version) serv + " :" + server + " " + version + " 0 0\r\n"  //might wanna change it after impleemnted channels
+#define RPL_ISUPPORT(serv) serv + " :CASEMAPPING=rfc1459 CHANTYPES=# CHANMODES=itl PREFIX=(ov)@+ CHANLIMIT=#: MAXNICKLEN=9 NICKLEN=9 TOPICLEN=307 KICKLEN=307 CHANNELLEN=200 USERLEN=9\r\n"
+//RPL_ISUPPORT isnt correct fully yet
 
 // // 400-499: Client errors
 // #define E403 "<channel name> :No such channel"

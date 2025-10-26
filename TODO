@@ -1,56 +1,10 @@
 https://modern.ircdocs.horse/#rplmyinfo-004
 
-nickname character checks
--Nicknames are non-empty strings with the following restrictions:
--They MUST NOT contain any of the following characters: space (' ', 0x20), comma (',', 0x2C), asterisk ('*', 0x2A), question mark ('?', 0x3F), exclamation mark ('!', 0x21), at sign ('@', 0x40).
--They MUST NOT start with any of the following characters: dollar ('$', 0x24), colon (':', 0x3A).
--They MUST NOT start with a character listed as a channel type, channel membership prefix, or prefix listed in the IRCv3 multi-prefix Extension.
--They SHOULD NOT contain any dot character ('.', 0x2E).
-
-should check two ports?
--IRC client-server connections work over TCP/IP. The standard ports for client-server connections are TCP/6667 for plaintext, and TCP/6697 for TLS connections.
-
-Case mapping
-Names of IRC entities (clients, servers, channels) are casemapped. This prevents, for example, someone having the nickname 'Dan' and someone else having the nickname 'dan', confusing other users. Servers MUST advertise the casemapping they use in the RPL_ISUPPORT numeric that’s sent when connection registration has completed.
-
-Command?
--  command         ::=  letter* / 3digit
--The command must either be a valid IRC command or a numeric (a three-digit number represented as text).
--Information on specific commands / numerics can be found in the Client Messages and Numerics sections, respectively.
-
-Numeric Replies
--Most messages sent from a client to a server generates a reply of some sort. The most common form of reply is the numeric reply, used for both errors and normal replies. Distinct from a normal message, a numeric reply MUST -contain a <source> and use a three-digit numeric as the command. A numeric reply SHOULD contain the target of the reply as the first parameter of the message. A numeric reply is not allowed to originate from a client.
--In all other respects, a numeric reply is just like a normal message. A list of numeric replies is supplied in the Numerics section.
-
-
-at least one RPL_ISUPPORT (005) numeric to the client. !
-The server MAY then send other numerics and messages.
-The server SHOULD then respond as though the client sent the LUSERS command and return the appropriate numerics.
-The server MUST then respond as though the client sent it the MOTD command, i.e. it must send either the successful Message of the Day numerics or the ERR_NOMOTD (422) numeric.
-If the user has client modes set on them automatically upon joining the network, the server SHOULD send the client the RPL_UMODEIS (221) reply or a MODE message with the client as target, preferably the former.
-
-
-server welcome message missing
-
-
 When the PRIVMSG message is sent from a server to a client and <target> starts with a dollar character ('$', 0x24), the message is a broadcast sent to all clients on one or multiple servers.
 
+CAP
 
-All messages from the server to clients should be prefixed with the server name:
+SIGHANDLER
 
-text
-:<servername> <numeric> <nick> :<message>
-
-timestamp missing
-
-server :  instead of a :
-
-
-
-What it should be:
-text
-:localhost 465 a :Message sent
-or at minimum:
-
-text
-:localhost :Message sent
+//QUIT
+quit doesnt work
