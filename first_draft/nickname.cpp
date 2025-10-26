@@ -1,0 +1,108 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   nickname.cpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/26 16:20:11 by mtelek            #+#    #+#             */
+/*   Updated: 2025/10/26 16:20:37 by mtelek           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "server.hpp"
+
+bool server::isNameTaken(std::string Client::* member, const std::string& name)
+{
+	std::string lowerName = toLowerString(name);
+	for (std::map<int, Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
+	{
+		if (toLowerString(it->second.*member) == lowerName)
+			return (true);
+	}
+	return (false);
+}
+
+bool server::isValidName(Client &client, std::string &nickname)
+{
+	if (nickname.empty())
+	{
+		//NO NICKNAME
+		std::string error = E431(std::string(SERV), client.nickname);
+		send(client.fd, error.c_str(), error.length(), 0);
+		return (false);
+	}
+	const std::string forbiddenChars = " ,*?!@";
+	for (size_t i = 0; i < nickname.length(); ++i)
+	{
+		//FORBIDDEN CHARACTERS
+		if (forbiddenChars.find(nickname[i]) != std::string::npos)
+		{
+			std::string error = E432(std::string(SERV), client.nickname);
+			send(client.fd, error.c_str(), error.length(), 0);
+			return (false);
+		}
+	}
+	if (nickname[0] == '$' || nickname[0] == ':')
+	{
+		//FORBIDDEN CHARACTERS
+		std::string error = E432(std::string(SERV), client.nickname);
+		send(client.fd, error.c_str(), error.length(), 0);
+		return (false);
+	}
+	const std::string Prefixes = "#&@+"; // or just only &
+	if (Prefixes.find(nickname[0]) != std::string::npos)
+	{
+		//FORBIDDEN PREFIXES
+		std::string error = E432(std::string(SERV), client.nickname);
+		send(client.fd, error.c_str(), error.length(), 0);
+		return (false);
+	}
+	if (nickname.find('.') != std::string::npos)
+	{
+		//WARNING - DOT SHOULDNT BE USED
+		std::string warning = E4322(std::string(SERV), client.nickname);
+		send(client.fd, warning.c_str(), warning.length(), 0);
+		return (true);
+	}
+	return (true);
+}
+
+void server::setNick(Client &client, std::istringstream &iss)
+{
+	std::string nickname;
+	iss >> nickname;
+
+	std::cout << formatDate() << "Client#" << client.fd << " -> NICK " << nickname << std::endl;
+	if (client.isRegistered == true)
+	{
+		//INVALID - REREGISTRATION
+		std::string error = E462(std::string(SERV), client.nickname);
+		send(client.fd, error.c_str(), error.length(), 0);
+		return ;
+	}
+	else if (client.hasPassword == true)
+	{
+		//CAN SET NICKNAME - PASSWORD VALID
+		if (isNameTaken(&Client::nickname, nickname) == true)
+		{
+			std::string error = E433(std::string(SERV), client.nickname);
+			send(client.fd, error.c_str(), error.length(), 0);
+		}
+		else if (isValidName(client, nickname) == false)
+			return ;
+		else
+		{
+			client.nickname = nickname;
+			client.hasNick = true;
+			std::string success = S433(std::string(SERV), client.nickname);
+			send(client.fd, success.c_str(), success.length(), 0);
+		}
+	}
+	else
+	{
+		//CANNOT SET NICKNAME - PASSWORD INVALID
+		std::string error = E4643(std::string(SERV), client.nickname);
+		send(client.fd, error.c_str(), error.length(), 0);
+	}
+}
