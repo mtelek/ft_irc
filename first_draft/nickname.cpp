@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:20:11 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 20:39:49 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 22:29:50 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,30 +82,21 @@ void server::setNick(Client &client, std::istringstream &iss)
 		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
 		return ;
 	}
-	else if (client.hasPassword == true)
+	//CAN SET NICKNAME - PASSWORD VALID
+	if (isNameTaken(&Client::nickname, nickname) == true)
 	{
-		//CAN SET NICKNAME - PASSWORD VALID
-		if (isNameTaken(&Client::nickname, nickname) == true)
-		{
-			//NICKNAME TAKEN
-			std::string error = E433(std::string(SERV), client.nickname);
-			send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
-		}
-		else if (isValidName(client, nickname) == false)
-			return ;
-		else
-		{
+		//NICKNAME TAKEN
+		std::string error = E433(std::string(SERV), client.nickname);
+		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
+	}
+	else if (isValidName(client, nickname) == false)
+		return ;
+	else
+	{
 			//VALID NICKNAME
 			client.nickname = nickname;
 			client.hasNick = true;
-			std::string success = S433(std::string(SERV), client.nickname);
+			std::string success = S435(std::string(SERV), client.nickname);
 			send(client.fd, success.c_str(), success.length(), MSG_DONTWAIT);
-		}
-	}
-	else
-	{
-		//CANNOT SET NICKNAME - PASSWORD INVALID
-		std::string error = E4643(std::string(SERV), client.nickname);
-		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
 	}
 }

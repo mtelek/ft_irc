@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 18:48:29 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 18:52:38 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 22:30:22 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 //AUTHENTICATE PASSWORD
 #define E464(serv,nick)  serv + " 464 " + nick + " :Password incorrect\r\n"
 #define E4642(serv,nick) serv + " 4642 " + nick + " :Password incorrect. Disconnecting\r\n"
-#define S464(serv,nick) serv + " 464 " + nick + " :Authentication successful\r\n"
+#define S467(serv,nick) serv + " 467 " + nick + " :Authentication successful\r\n"
 #define E462(serv,nick) serv + " 462 " + nick + " :You may not reregister\r\n"
 
 //SETNICK
 #define E433(serv,nick) serv + " 433 " + nick + " :Nickname is already in use\r\n"
 #define E431(serv,nick) serv + " 431 " + nick + " :No nickname given\r\n"
-#define S433(serv, nick) serv + " 433 " + nick + " :Nickname set to " + nick + " \r\n"
+#define S435(serv, nick) serv + " 435 " + nick + " :Nickname set to " + nick + " \r\n"
 #define E4643(serv,nick) serv + " 4643 " + nick + " :Authentication required\r\n"
 #define E432(serv,nick) serv + " 432 " + nick + " :Erroneous nickname\r\n"
 #define E4322(serv,nick) serv + " 4322 " + nick + " :Warning: Erroneous nickname\r\n"

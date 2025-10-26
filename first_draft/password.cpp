@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:18:56 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 20:40:09 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 22:30:36 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int server::authenticate(Client &client, std::istringstream &iss)
 		//CORRECT PASSWORD
 		client.hasPassword = true;
 		std::cout << formatDate() << "Client#" << client.fd << " -> PASS ****\n";
-		std::string success = S464(std::string(SERV), client.nickname);
+		std::string success = S467(std::string(SERV), client.nickname);
 		send(client.fd, success.c_str(), success.length(), MSG_DONTWAIT);
 	}
 	else
