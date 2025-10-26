@@ -52,6 +52,8 @@ class server
 
 			std::string buffer;
 			int wrongPass;
+
+			std::set<std::string> joinedChannels;
 		};
 
 		std::map <int, Client> clients_;               // fd -> client
@@ -92,7 +94,8 @@ class server
 		// int		invite(Client &client, std::istringstram &iss);				//# INVITE
 
 		//CHANNEL HELPER
-		int		initChannel(int fd, Channel& channel);
+		int		initChannel(int fd, std::string& name);
+		// int		addUser(int fd, Channel& channel);
 
 		//HELPER
 		bool	maxAttemptsReached(Client &client);
