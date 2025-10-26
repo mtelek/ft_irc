@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 16:14:43 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 20:35:35 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 20:39:12 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int server::quit(Client &client, std::istringstream &iss)
 	std::cout << formatDate() << "Client#" << client.fd << " -> QUIT " << reason << std::endl;
 	std::cout << formatDate() << "Client#" << client.fd << " disconnected\n";
 	std::string success = S410(std::string(SERV), client.nickname);
-	send(client.fd, success.c_str(), success.length(), 0);
+	send(client.fd, success.c_str(), success.length(), MSG_DONTWAIT);
 	close(client.fd);
 	return (-1);
 }
@@ -33,11 +33,11 @@ void	server::sendWelcome(Client &client)
 	std::string created = RPL_CREATED(std::string(SERV), startDate);
 	std::string myinfo = RPL_MYINFO(std::string(SERV), SERVER_NAME, VERSION);
 	std::string isupport = RPL_ISUPPORT(std::string(SERV));
-	send(client.fd, welcome.c_str(), welcome.length(), 0);
-	send(client.fd, yourhost.c_str(), yourhost.length(), 0);
-	send(client.fd, created.c_str(), created.length(), 0);
-	send(client.fd, myinfo.c_str(), myinfo.length(), 0);
-	send(client.fd, isupport.c_str(), isupport.length(), 0);
+	send(client.fd, welcome.c_str(), welcome.length(), MSG_DONTWAIT);
+	send(client.fd, yourhost.c_str(), yourhost.length(), MSG_DONTWAIT);
+	send(client.fd, created.c_str(), created.length(), MSG_DONTWAIT);
+	send(client.fd, myinfo.c_str(), myinfo.length(), MSG_DONTWAIT);
+	send(client.fd, isupport.c_str(), isupport.length(), MSG_DONTWAIT);
 }
 
 void	server::checkRegistration(Client &client)
@@ -59,7 +59,7 @@ void server::cap(Client &client, std::istringstream &iss)
 	{
 		// Send minimal capabilities or none
 		std::string response = "CAP * LS :\r\n";
-		send(client.fd, response.c_str(), response.length(), 0);
+		send(client.fd, response.c_str(), response.length(), MSG_DONTWAIT);
 	}
 	else if (subcmd == "REQ")
 	{
@@ -67,7 +67,7 @@ void server::cap(Client &client, std::istringstream &iss)
 		std::string caps;
 		std::getline(iss, caps);
 		std::string response = "CAP * ACK " + caps + "\r\n";
-		send(client.fd, response.c_str(), response.length(), 0);
+		send(client.fd, response.c_str(), response.length(), MSG_DONTWAIT);
 	}
 	else if (subcmd == "END") {}
 }
@@ -111,7 +111,7 @@ int server::executeCommands(int client_fd, const std::string& command)
 	{
 		//INVALID COMMAND
 		std::string error = E463(std::string(SERV), client.nickname, cmd);
-		send(client.fd, error.c_str(), error.length(), 0);
+		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
 	}
 	checkRegistration(client);
 	client.buffer.clear();

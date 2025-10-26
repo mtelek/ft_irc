@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 16:21:08 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 18:49:11 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/10/26 20:40:43 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,21 @@ void server::setUser(Client &client, std::istringstream &iss)
 	{
 		//INVALID - REREGISTRATION
 		std::string error = E462(std::string(SERV), client.nickname);
-		send(client.fd, error.c_str(), error.length(), 0);
+		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
 		return ;
 	}
 	if (username.empty() || hostname.empty() || servername.empty() || realname.empty())
 	{
 		//INVALID - EMPTY ARGUMENTS
 		std::string error = E461(std::string(SERV), client.nickname, "USER");
-		send(client.fd, error.c_str(), error.length(), 0);
+		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
 		return ;
 	}
 	if (!isValidLength(username, 9) || !isValidLength(realname, 9))
 	{
 		//USERNAME OR REALNAME TOO LONG
 		std::string error = E4323(std::string(SERV), client.nickname);
-		send(client.fd, error.c_str(), error.length(), 0);
+		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
 		return ;
 	}
 	else if (!realname.empty() && realname[0] == ':')
@@ -49,9 +49,9 @@ void server::setUser(Client &client, std::istringstream &iss)
 	
 	//USERNAME SET
 	std::string success = S411(std::string(SERV), client.nickname, username);
-	send(client.fd, success.c_str(), success.length(), 0);
+	send(client.fd, success.c_str(), success.length(), MSG_DONTWAIT);
 	
 	//REALNAME SET
 	success = S412(std::string(SERV), client.nickname, realname);
-	send(client.fd, success.c_str(), success.length(), 0);
+	send(client.fd, success.c_str(), success.length(), MSG_DONTWAIT);
 }
