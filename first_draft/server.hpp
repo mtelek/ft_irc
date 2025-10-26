@@ -4,6 +4,7 @@
 #define SERVER_NAME "localhost"
 #define VERSION "1.0"
 #define MAX_PASS_ATTEMPTS 3
+#define SERV ":server.1"
 
 #include <iostream>
 #include <cstring>      // for memset
@@ -102,7 +103,10 @@ class server
 		bool	isNameTaken(std::string Client::* member, const std::string& name);
 		void	checkRegistration(Client &client);
 		void	sendWelcome(Client &client);
+		bool	isValidName(Client &client, std::string &nickname);
 		std::string	getStartDate();
+		std::string formatDate();
+		std::string toLowerString(const std::string& str);
 
 		//SENDING MESSAGE COMMANDS
 		void		sendPrivate(Client &client, std::istringstream &iss);
