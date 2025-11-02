@@ -1,16 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   nickname.cpp                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/26 16:20:11 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 22:29:50 by mtelek           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#include "server.hpp"
+#include "../server.hpp"
 
 bool server::isNameTaken(std::string Client::* member, const std::string& name)
 {

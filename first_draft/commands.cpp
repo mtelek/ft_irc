@@ -3,28 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
+/*   By: tmeniga@student.42vienna.com <tmeniga>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 16:14:43 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 20:39:12 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/11/02 15:54:42 by tmeniga@stu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.hpp"
-
-int server::quit(Client &client, std::istringstream &iss)
-{
-	std::string reason;
-	iss >> reason;
-
-	//DISCONNECT CLIENT
-	std::cout << formatDate() << "Client#" << client.fd << " -> QUIT " << reason << std::endl;
-	std::cout << formatDate() << "Client#" << client.fd << " disconnected\n";
-	std::string success = S410(std::string(SERV), client.nickname);
-	send(client.fd, success.c_str(), success.length(), MSG_DONTWAIT);
-	close(client.fd);
-	return (-1);
-}
 
 void	server::sendWelcome(Client &client)
 {
@@ -48,28 +34,6 @@ void	server::checkRegistration(Client &client)
 		std::cout << formatDate() << "Client#" << client.fd << "'s (" << client.nickname << ") registration successful\n";
 		sendWelcome(client);
 	}
-}
-
-void server::cap(Client &client, std::istringstream &iss)
-{
-	std::string subcmd;
-	iss >> subcmd;
-	
-	if (subcmd == "LS")
-	{
-		// Send minimal capabilities or none
-		std::string response = "CAP * LS :\r\n";
-		send(client.fd, response.c_str(), response.length(), MSG_DONTWAIT);
-	}
-	else if (subcmd == "REQ")
-	{
-		// Acknowledge any requested capabilities
-		std::string caps;
-		std::getline(iss, caps);
-		std::string response = "CAP * ACK " + caps + "\r\n";
-		send(client.fd, response.c_str(), response.length(), MSG_DONTWAIT);
-	}
-	else if (subcmd == "END") {}
 }
 
 int server::executeCommands(int client_fd, const std::string& command)
@@ -105,7 +69,7 @@ int server::executeCommands(int client_fd, const std::string& command)
 	else if (cmd == "JOIN")
 	{
 		//commented out to test irssi till join isnt ready
-		//join(client, iss);
+		join(client, iss);
 	}
 	else
 	{

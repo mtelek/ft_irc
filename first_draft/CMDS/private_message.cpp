@@ -1,16 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   private_message.cpp                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/26 16:22:22 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 22:56:13 by mtelek           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#include "server.hpp"
+#include "../server.hpp"
 
 void server::sendPrivate(Client &client, std::istringstream &iss)
 {

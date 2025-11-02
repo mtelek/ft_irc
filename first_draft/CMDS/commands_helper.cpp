@@ -1,16 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   commands_helper.cpp                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/26 16:23:54 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 18:37:26 by mtelek           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#include "server.hpp"
+#include "../server.hpp"
 
 bool server::isValidLength(const std::string& str, size_t maxLength)
 {

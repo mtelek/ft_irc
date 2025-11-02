@@ -61,6 +61,7 @@ class server
 			int wrongPass;
 
 			std::set<std::string> joinedChannels;
+			std::string	userKey;
 		};
 
 		std::map <int, Client> clients_;               // fd -> client
@@ -93,17 +94,22 @@ class server
 		void	setNick(Client &client, std::istringstream &iss);			//# NICK
 		void	setUser(Client &client, std::istringstream &iss);			//# USER
 		int		quit(Client &client, std::istringstream &iss);				//# QUIT
-		int		join(Client &client, std::istringstream &iss);				//# JOIN
 		void	cap(Client &client, std::istringstream &iss);				//# CAP
-		// int		part(Client &client, std::istringstram &iss);				//# PART
-		// int		topic(Client &client, std::istringstram &iss);				//# TOPIC
-		// int		mode(Client &client, std::istringstram &iss);				//# MODE
-		// int		kick(Client &client, std::istringstram &iss);				//# KICK
-		// int		invite(Client &client, std::istringstram &iss);				//# INVITE
+		int		join(Client &client, std::istringstream &iss);				//# JOIN
+		int		part(Client &client, std::istringstream &iss);				//# PART
+		int		topic(Client &client, std::istringstream &iss);				//# TOPIC
+		int		mode(Client &client, std::istringstream &iss);				//# MODE
+		// int		kick(Client &client, std::istringstream &iss);				//# KICK
+		// int		invite(Client &client, std::istringstream &iss);				//# INVITE
 
 		//CHANNEL HELPER
 		int		initChannel(int fd, std::string& name);
-		// int		addUser(int fd, Channel& channel);
+		int		addUser(int fd, Channel& channel);
+		std::string		getModes(Channel &channel);
+		bool	isNumber(const std::string& s);
+		int		findClientByNick(const std::string& nick);
+
+
 
 		//USER HELPER
 		bool	maxAttemptsReached(Client &client);
