@@ -4,7 +4,7 @@ CXX = c++
 FLAGS = -Wall -Wextra -Werror -std=c++98
 SRC = main.cpp server.cpp commands.cpp \
 		  sighandler.cpp \
-		 CMDS/join.cpp CMDS/topic.cpp CMDS/part.cpp CMDS/kick.cpp CMDS/mode.cpp \
+		 CMDS/join.cpp CMDS/topic.cpp CMDS/part.cpp CMDS/kick.cpp CMDS/mode.cpp CMDS/invite.cpp \
 		 CMDS/cmds_helper.cpp CMDS/quit.cpp CMDS/cap.cpp  CMDS/nickname.cpp CMDS/password.cpp \
 		 CMDS/private_message.cpp CMDS/username.cpp CMDS/commands_helper.cpp
 

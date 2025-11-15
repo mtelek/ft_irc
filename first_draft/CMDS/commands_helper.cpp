@@ -46,3 +46,27 @@ std::string	server::getStartDate()
 	
 	return (ss.str());
 }
+
+void	server::sendWelcome(Client &client)
+{
+	std::string welcome = RPL_WELCOME(std::string(SERV), client.nickname ,SERVER_NAME, client.username, client.hostname);
+	std::string yourhost = RPL_YOURHOST(std::string(SERV), SERVER_NAME, VERSION);
+	std::string created = RPL_CREATED(std::string(SERV), startDate);
+	std::string myinfo = RPL_MYINFO(std::string(SERV), SERVER_NAME, VERSION);
+	std::string isupport = RPL_ISUPPORT(std::string(SERV));
+	send(client.fd, welcome.c_str(), welcome.length(), MSG_DONTWAIT);
+	send(client.fd, yourhost.c_str(), yourhost.length(), MSG_DONTWAIT);
+	send(client.fd, created.c_str(), created.length(), MSG_DONTWAIT);
+	send(client.fd, myinfo.c_str(), myinfo.length(), MSG_DONTWAIT);
+	send(client.fd, isupport.c_str(), isupport.length(), MSG_DONTWAIT);
+}
+
+void	server::checkRegistration(Client &client)
+{
+	if (client.hasPassword && client.hasNick && client.hasUser && !client.isRegistered)
+	{
+		client.isRegistered = true;
+		std::cout << formatDate() << "Client#" << client.fd << "'s (" << client.nickname << ") registration successful\n";
+		sendWelcome(client);
+	}
+}

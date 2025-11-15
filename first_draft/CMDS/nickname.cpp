@@ -13,6 +13,8 @@ bool server::isNameTaken(std::string Client::* member, const std::string& name)
 	return (false);
 }
 
+//! ADD '#' TO FORBIDDEN CHARS SO BC '#' IS FOR CHANNEL
+
 bool server::isValidName(Client &client, std::string &nickname)
 {
 	if (nickname.empty())

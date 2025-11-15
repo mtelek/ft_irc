@@ -1,39 +1,37 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   commands.cpp                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tmeniga@student.42vienna.com <tmeniga>     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/21 16:14:43 by mtelek            #+#    #+#             */
-/*   Updated: 2025/11/02 15:54:42 by tmeniga@stu      ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "server.hpp"
 
-void	server::sendWelcome(Client &client)
-{
-	std::string welcome = RPL_WELCOME(std::string(SERV), client.nickname ,SERVER_NAME, client.username, client.hostname);
-	std::string yourhost = RPL_YOURHOST(std::string(SERV), SERVER_NAME, VERSION);
-	std::string created = RPL_CREATED(std::string(SERV), startDate);
-	std::string myinfo = RPL_MYINFO(std::string(SERV), SERVER_NAME, VERSION);
-	std::string isupport = RPL_ISUPPORT(std::string(SERV));
-	send(client.fd, welcome.c_str(), welcome.length(), MSG_DONTWAIT);
-	send(client.fd, yourhost.c_str(), yourhost.length(), MSG_DONTWAIT);
-	send(client.fd, created.c_str(), created.length(), MSG_DONTWAIT);
-	send(client.fd, myinfo.c_str(), myinfo.length(), MSG_DONTWAIT);
-	send(client.fd, isupport.c_str(), isupport.length(), MSG_DONTWAIT);
-}
+enum CommandType {
+    CMD_UNKNOWN = -1,
+    CMD_CAP,
+    CMD_PASS,
+    CMD_NICK,
+    CMD_USER,
+    CMD_QUIT,
+    CMD_PRIVMSG,
+    CMD_JOIN,
+	CMD_KICK,
+	CMD_INVITE,
+	CMD_PART,
+	CMD_TOPIC,
+	CMD_MODE,
+};
 
-void	server::checkRegistration(Client &client)
+static CommandType getCommandType(const std::string &cmd)
 {
-	if (client.hasPassword && client.hasNick && client.hasUser && !client.isRegistered)
-	{
-		client.isRegistered = true;
-		std::cout << formatDate() << "Client#" << client.fd << "'s (" << client.nickname << ") registration successful\n";
-		sendWelcome(client);
-	}
+	if (cmd == "CAP")		return CMD_CAP;
+    if (cmd == "PASS")		return CMD_PASS;
+    if (cmd == "NICK")		return CMD_NICK;
+    if (cmd == "USER")		return CMD_USER;
+    if (cmd == "QUIT")		return CMD_QUIT;
+    if (cmd == "PRIVMSG")	return CMD_PRIVMSG;
+    if (cmd == "JOIN")		return CMD_JOIN;
+    if (cmd == "KICK")		return CMD_KICK;
+    if (cmd == "INVITE")	return CMD_INVITE;
+    if (cmd == "PART")		return CMD_PART;
+    if (cmd == "TOPIC")		return CMD_TOPIC;
+    if (cmd == "MODE")		return CMD_MODE;
+    return CMD_UNKNOWN;
 }
 
 int server::executeCommands(int client_fd, const std::string& command)
@@ -44,39 +42,67 @@ int server::executeCommands(int client_fd, const std::string& command)
 	std::string cmd;
 	iss >> cmd;
 
-	if (cmd == "CAP")
+	CommandType type = getCommandType(cmd);
+
+	switch(type)
 	{
-		cap(client, iss);
+		case CMD_CAP:			//! UNTESTED
+			cap(client, iss);
+			break;
+		
+		case CMD_PASS:			//! UNTESTED
+            if (authenticate(client, iss) == -1)
+                return (-1);
+            break;
+
+		case CMD_NICK:			//! UNTESTED 
+            setNick(client, iss);
+            break;
+
+        case CMD_USER:			//! UNTESTED
+            setUser(client, iss);
+            break;
+
+        case CMD_QUIT:			//! UNTESTED
+            if (quit(client, iss) == -1)
+                return (-1);
+            break;
+
+        case CMD_PRIVMSG:		//! UNTESTED
+            sendPrivate(client, iss);
+            break;
+
+        case CMD_JOIN:			//! UNTESTED
+            join(client, iss);
+            break;
+
+		case CMD_KICK:		//! UNTESTED
+			kick(client, iss);
+			break;
+
+		case CMD_INVITE:		//! UNTESTED
+			invite(client, iss);
+			break;
+
+		case CMD_PART:			//! UNTESTED
+			part(client, iss);
+			break;
+
+		case CMD_TOPIC: 	//! UNTESTED
+			topic(client, iss);
+			break;
+
+		case CMD_MODE:		//! UNTESTED
+			mode(client, iss);
+		break;
+
+		default:
+		{
+			std::string error = E463(std::string(SERV), client.nickname, cmd);
+			send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
+		}
 	}
-	else if (cmd == "PASS")
-	{
-		if (authenticate(client, iss) == -1)
-			return (-1);
-	}
-	else if (cmd == "NICK")
-		setNick(client, iss);
-	else if (cmd == "USER")
-		setUser(client, iss);
-	else if (cmd == "QUIT")
-	{
-		if (quit(client, iss) == -1)
-			return (-1);
-	}
-	else if (cmd == "PRIVMSG")
-	{
-		sendPrivate(client, iss);
-	}
-	else if (cmd == "JOIN")
-	{
-		//commented out to test irssi till join isnt ready
-		join(client, iss);
-	}
-	else
-	{
-		//INVALID COMMAND
-		std::string error = E463(std::string(SERV), client.nickname, cmd);
-		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
-	}
+
 	checkRegistration(client);
 	client.buffer.clear();
 	return (0);

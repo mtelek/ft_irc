@@ -99,16 +99,21 @@ class server
 		int		part(Client &client, std::istringstream &iss);				//# PART
 		int		topic(Client &client, std::istringstream &iss);				//# TOPIC
 		int		mode(Client &client, std::istringstream &iss);				//# MODE
-		// int		kick(Client &client, std::istringstream &iss);				//# KICK
-		// int		invite(Client &client, std::istringstream &iss);				//# INVITE
+		int		kick(Client &client, std::istringstream &iss);				//# KICK
+		int		invite(Client &client, std::istringstream &iss);				//# INVITE
 
 		//CHANNEL HELPER
 		int		initChannel(int fd, std::string& name);
 		int		addUser(int fd, Channel& channel);
 		std::string		getModes(Channel &channel);
 		bool	isNumber(const std::string& s);
-		int		findClientByNick(const std::string& nick);
+		int		findClientByNick(const std::string& nick);			//! make this function CASE insensitive
 
+		//PRIVMSG HELPER
+		int		isChannel(std::string &target);
+		int		privmsg2Channel(Client &client, std::string &target, std::string &message);
+		int		privmsg2Client(Client &client, std::string &target, std::string &message); 
+		int		ft_send(int fd, std::string &message);
 
 
 		//USER HELPER
