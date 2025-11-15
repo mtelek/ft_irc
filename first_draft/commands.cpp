@@ -38,6 +38,8 @@ int server::executeCommands(int client_fd, const std::string& command)
 {
 	Client& client = clients_[client_fd];
 
+	std::cout << command << std::endl;
+
 	std::istringstream iss(command);
 	std::string cmd;
 	iss >> cmd;
@@ -52,7 +54,10 @@ int server::executeCommands(int client_fd, const std::string& command)
 		
 		case CMD_PASS:			//! UNTESTED
             if (authenticate(client, iss) == -1)
+			{
+				std::cout << "AAAAAAAA" << std::endl;
                 return (-1);
+			}
             break;
 
 		case CMD_NICK:			//! UNTESTED 
@@ -104,7 +109,6 @@ int server::executeCommands(int client_fd, const std::string& command)
 	}
 
 	checkRegistration(client);
-	client.buffer.clear();
 	return (0);
 }
 
@@ -112,23 +116,48 @@ int	server::recieveMessage(std::vector<pollfd> fds, size_t i, char *buffer, ssiz
 {
 	buffer[bytes] = '\0';
 	Client& client = clients_[fds[i].fd];
-	client.buffer += std::string(buffer, bytes);
-	
-	int j = 0;
-	size_t pos;
-	if ((pos = client.buffer.find("\r\n")) != std::string::npos)
-		j = 2;
-	else if ((pos = client.buffer.find('\n')) != std::string::npos)
-		j = 1;
-	if (j)
+	client.buffer.append(buffer, bytes);
+
+	while (true)
 	{
-		std::string message = client.buffer.substr(0, pos);
-		client.buffer.erase(0, pos + j);
-		if (!message.empty())
+		size_t	pos;
+		int		len = 0;
+
+		if ((pos = client.buffer.find("\r\n")) != std::string::npos)
+			len = 2;
+		else if	((pos = client.buffer.find('\n')) != std::string::npos)  //! dk if need to keep this, some clients sometimes only send \n instead of \r\n
+			len = 1;
+
+		if (!len)
+			break;
+		
+		std::string command = client.buffer.substr(0, pos);
+		client.buffer.erase(0, pos + len);
+
+		if (!command.empty())
 		{
-			if (executeCommands(fds[i].fd, message) == -1)
-				return (-1);
+			std::cout << command << std::endl;  //for debugging
+			if (executeCommands(fds[i].fd, command) == -1)
+                return (-1); // tell caller to close client
 		}
 	}
 	return (0);
-}
+}	
+	// int j = 0;
+	// size_t pos;
+	// if ((pos = client.buffer.find("\r\n")) != std::string::npos)
+	// 	j = 2;
+	// else if ((pos = client.buffer.find('\n')) != std::string::npos)
+	// 	j = 1;
+	// if (j)
+	// {
+	// 	std::string message = client.buffer.substr(0, pos);
+	// 	client.buffer.erase(0, pos + j);
+	// 	if (!message.empty())
+	// 	{
+	// 		if (executeCommands(fds[i].fd, message) == -1)
+	// 			return (-1);
+	// 	}
+	// }
+	// return (0);
+// }
