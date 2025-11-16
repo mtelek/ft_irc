@@ -54,16 +54,26 @@ int		server::privmsg2Channel(Client &client, std::string &target, std::string &m
 
 int		server::privmsg2Client(Client &client, std::string &target, std::string &message)
 {
+	std::cout << "PRIVMS TEST TEST TEST" << std::endl;
 	int target_fd = findClientByNick(target);
+	std::cout << target_fd << std::endl;
 	if (target_fd == -1)
 	{
 		std::cout << "no such target found" << std::endl;	//! SEND TO CLIENT
 		return (-1);
 	}
 	
+	if (!message.empty() && message[0] == ':')
+		message.erase(0, 1);
+	
 	std::string new_message = ":" + client.nickname + " PRIVMSG " + target + " :" + message + "\r\n";
-	ft_send(target_fd, new_message);
-	return (0);
+
+	std::cout << new_message << std::endl;
+	if (ft_send(target_fd, new_message) == -1)
+	{
+			return (1);
+	}
+	return (0); 
 }
 
 int		server::ft_send(int fd, std::string &message)	//! maybe change this funcion (MSG_NOSIGNAL, broken pipe)
@@ -76,6 +86,7 @@ int		server::ft_send(int fd, std::string &message)	//! maybe change this funcion
 	{
 		ret = send(fd, message.c_str() + bytessend, bytesleft, MSG_DONTWAIT);
 		if (ret == -1)	break;
+		//# if -1, delete_client();
 		bytessend += ret;
 		bytesleft -= ret;
 	}

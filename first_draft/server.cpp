@@ -68,6 +68,7 @@ void    server::run()
 	//SET UP SIGHANDLER
 	signal(SIGINT, server::sigHandler);		// Ctrl+C
 	signal(SIGTERM, server::sigHandler);	// Termination
+	signal(SIGPIPE, SIG_IGN);									//! test if sending to closed socked is handeld correctly
 
 	//# START LISTENING (Allow up to 128 pending connections that haven’t been accepted yet)
 	if(listen(server_fd_, 128) == -1)

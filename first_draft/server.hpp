@@ -100,7 +100,8 @@ class server
 		int		topic(Client &client, std::istringstream &iss);				//# TOPIC
 		int		mode(Client &client, std::istringstream &iss);				//# MODE
 		int		kick(Client &client, std::istringstream &iss);				//# KICK
-		int		invite(Client &client, std::istringstream &iss);				//# INVITE
+		int		invite(Client &client, std::istringstream &iss);			//# INVITE
+		int		ping(Client &client, std::istringstream &iss);				//# PING
 
 		//CHANNEL HELPER
 		int		initChannel(int fd, std::string& name);

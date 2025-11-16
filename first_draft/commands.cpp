@@ -15,6 +15,7 @@ enum CommandType {
 	CMD_PART,
 	CMD_TOPIC,
 	CMD_MODE,
+	CMD_PING,
 };
 
 static CommandType getCommandType(const std::string &cmd)
@@ -31,6 +32,7 @@ static CommandType getCommandType(const std::string &cmd)
     if (cmd == "PART")		return CMD_PART;
     if (cmd == "TOPIC")		return CMD_TOPIC;
     if (cmd == "MODE")		return CMD_MODE;
+	if (cmd == "PING")		return CMD_PING;
     return CMD_UNKNOWN;
 }
 
@@ -99,7 +101,11 @@ int server::executeCommands(int client_fd, const std::string& command)
 
 		case CMD_MODE:		//! UNTESTED
 			mode(client, iss);
-		break;
+			break;
+
+		case CMD_PING:
+			ping(client, iss);
+			break;
 
 		default:
 		{
@@ -117,6 +123,8 @@ int	server::recieveMessage(std::vector<pollfd> fds, size_t i, char *buffer, ssiz
 	buffer[bytes] = '\0';
 	Client& client = clients_[fds[i].fd];
 	client.buffer.append(buffer, bytes);
+
+	std::cout << client.buffer << std::endl; 
 
 	while (true)
 	{
@@ -161,3 +169,11 @@ int	server::recieveMessage(std::vector<pollfd> fds, size_t i, char *buffer, ssiz
 	// }
 	// return (0);
 // }
+
+// /set user_name tom
+// /set real_name tom m
+// /set nick tom
+
+// /set user_name paul
+// /set real_name paul p
+// /set nick paul
