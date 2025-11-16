@@ -62,7 +62,7 @@ int		server::privmsg2Client(Client &client, std::string &target, std::string &me
 	}
 	
 	std::string new_message = ":" + client.nickname + " PRIVMSG " + target + " :" + message + "\r\n";
-	ft_send(target_fd, message);
+	ft_send(target_fd, new_message);
 	return (0);
 }
 

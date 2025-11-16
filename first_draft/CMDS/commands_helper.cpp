@@ -49,11 +49,11 @@ std::string	server::getStartDate()
 
 void	server::sendWelcome(Client &client)
 {
-	std::string welcome = RPL_WELCOME(std::string(SERV), client.nickname ,SERVER_NAME, client.username, client.hostname);
-	std::string yourhost = RPL_YOURHOST(std::string(SERV), SERVER_NAME, VERSION);
-	std::string created = RPL_CREATED(std::string(SERV), startDate);
-	std::string myinfo = RPL_MYINFO(std::string(SERV), SERVER_NAME, VERSION);
-	std::string isupport = RPL_ISUPPORT(std::string(SERV));
+	std::string welcome = RPL_WELCOME(std::string(SERV), client.nickname, SERVER_NAME, client.username, client.hostname);
+	std::string yourhost = RPL_YOURHOST(std::string(SERV), client.nickname, SERVER_NAME, VERSION);
+	std::string created = RPL_CREATED(std::string(SERV), client.nickname, startDate);
+	std::string myinfo = RPL_MYINFO(std::string(SERV), client.nickname, SERVER_NAME, VERSION);
+	std::string isupport = RPL_ISUPPORT(std::string(SERV), client.nickname);
 	send(client.fd, welcome.c_str(), welcome.length(), MSG_DONTWAIT);
 	send(client.fd, yourhost.c_str(), yourhost.length(), MSG_DONTWAIT);
 	send(client.fd, created.c_str(), created.length(), MSG_DONTWAIT);

@@ -6,7 +6,7 @@
 /*   By: mtelek <mtelek@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 18:48:29 by mtelek            #+#    #+#             */
-/*   Updated: 2025/10/26 22:30:22 by mtelek           ###   ########.fr       */
+/*   Updated: 2025/11/16 16:05:40 by mtelek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@
 #define E401(serv, nick, target) serv + " 401 " + nick + " :" + target + " :No such nick/channel\r\n"
 
 //CLIENT WELCOME MESSAGE
-#define RPL_WELCOME(serv, nick, server, user, host) serv + " :Welcome to the " + server + " Network, " + nick + "[!" + user + "@" + host + "]\r\n"
-#define RPL_YOURHOST(serv, server, version) serv + " :Your host is " + server + " running version " + version + "\r\n"
-#define RPL_CREATED(serv, date) serv + " :This server was created " + date + "\r\n"
-#define RPL_MYINFO(serv, server, version) serv + " :" + server + " " + version + " 0 3\r\n"
-#define RPL_ISUPPORT(serv) serv + " :CASEMAPPING=rfc1459 CHANTYPES=# CHANMODES=itl PREFIX=(ov)@+ CHANLIMIT=#: MAXNICKLEN=9 NICKLEN=9 TOPICLEN=307 KICKLEN=307 CHANNELLEN=200 USERLEN=9\r\n"
+#define RPL_WELCOME(serv, nick, server, user, host) serv + " 001 " + nick + " :Welcome to the " + server + " Network, " + nick + "[!" + user + "@" + host + "]\r\n"
+#define RPL_YOURHOST(serv, nick, server, version) serv + " 002 " + nick + " :Your host is " + server + " running version " + version + "\r\n"
+#define RPL_CREATED(serv, nick, date) serv + " 003 " + nick + " :This server was created " + date + "\r\n"
+#define RPL_MYINFO(serv, nick, server, version) serv + " 004 " + nick + " :" + server + " " + version + " 0 3\r\n"
+#define RPL_ISUPPORT(serv, nick) serv + " 005 " + nick + " " + serv + " :CASEMAPPING=rfc1459 CHANTYPES=# CHANMODES=itl PREFIX=(ov)@+ CHANLIMIT=#: MAXNICKLEN=9 NICKLEN=9 TOPICLEN=307 KICKLEN=307 CHANNELLEN=200 USERLEN=9\r\n"
 
 // // 400-499: Client errors
 // #define E403 "<channel name> :No such channel"

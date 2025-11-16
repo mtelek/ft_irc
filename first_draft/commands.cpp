@@ -38,7 +38,7 @@ int server::executeCommands(int client_fd, const std::string& command)
 {
 	Client& client = clients_[client_fd];
 
-	std::cout << command << std::endl;
+	//std::cout << command << std::endl;
 
 	std::istringstream iss(command);
 	std::string cmd;
