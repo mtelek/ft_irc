@@ -66,6 +66,8 @@ void server::setNick(Client &client, std::istringstream &iss)
 	iss >> nickname;
 
 	std::cout << formatDate() << "Client#" << client.fd << " -> NICK " << nickname << std::endl;
+	if (!client.hasPassword) //!  still wrong, after trying to register twice
+		return ;
 	if (client.isRegistered == true)
 	{
 		//INVALID - REREGISTRATION
@@ -74,7 +76,7 @@ void server::setNick(Client &client, std::istringstream &iss)
 		return ;
 	}
 	//CAN SET NICKNAME - PASSWORD VALID
-	if (isNameTaken(&Client::nickname, nickname) == true)
+	if (isNameTaken(&Client::nickname, nickname) == true && )
 	{
 		//NICKNAME TAKEN
 		std::string error = E433(std::string(SERV), client.nickname);

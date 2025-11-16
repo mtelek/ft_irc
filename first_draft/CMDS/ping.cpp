@@ -13,7 +13,7 @@ int		server::ping(Client &client, std::istringstream &iss)
 	if (!message.empty() && message[0] != ':')
 		message = ":" + message;
 
-	std::string out_msg = "P0NG " + message + "\r\n";
+	std::string out_msg = "PONG " + message + "\r\n";
 	ft_send(client.fd, out_msg);
 
 	return (0);

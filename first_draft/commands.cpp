@@ -57,7 +57,6 @@ int server::executeCommands(int client_fd, const std::string& command)
 		case CMD_PASS:			//! UNTESTED
             if (authenticate(client, iss) == -1)
 			{
-				std::cout << "AAAAAAAA" << std::endl;
                 return (-1);
 			}
             break;

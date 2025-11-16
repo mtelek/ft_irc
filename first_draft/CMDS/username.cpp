@@ -9,6 +9,8 @@ void server::setUser(Client &client, std::istringstream &iss)
 	realname = trim(realname);
 	
 	std::cout << formatDate() << "Client#" << client.fd << " -> USER " << username << " " << hostname << " " << servername << " " << realname << "\n";
+	if (!client.hasPassword) //!  still wrong, after trying to register twice
+		return ;
 	if (client.isRegistered == true)
 	{
 		//INVALID - REREGISTRATION
