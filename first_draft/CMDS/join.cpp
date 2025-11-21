@@ -7,28 +7,32 @@ int		server::addUser(int fd, Channel& channel)
 	//# ALREADY MEMBER
 	if(channel.members.count(fd))
 	{
-		std::cout << client.nickname << "is already part of " << channel.name << std::endl;  //! SEND TO CLIENT
+		std::string err = ERR_USERONCHANNEL(std::string(SERV), client.nickname, channel.name);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 
 	//# +i (invite-only)
 	if (channel.isInviteOnly && !channel.invited.count(client.nickname))
 	{
-		std::cout << client.nickname << "is invite only and user: " << channel.name << "is not invited" << std::endl;	//! SEND TO CLIENT
+		std::string err = ERR_INVITEONLYCHAN(std::string(SERV), client.nickname, channel.name);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 
 	//# +l (user limit)
 	if (channel.userLimit > 0 && (int)channel.members.size() >= channel.userLimit)
 	{
-		std::cout << "channel " << channel.name << " is full: " << client.nickname << "cant join" << std::endl;	//! SEND TO CLIENT
+		std::string err = ERR_CHANNELISFULL(std::string(SERV), client.nickname, channel.name);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 
 	//# +k (key)
 	if (!channel.key.empty() && channel.key != client.userKey)
 	{
-		std::cout << client.nickname << "provided wrong key for " << channel.name << std::endl; //! SEND TO CLIENT
+		std::string err = ERR_BADCHANNELKEY(std::string(SERV), client.nickname, channel.name);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 
@@ -44,7 +48,7 @@ int		server::addUser(int fd, Channel& channel)
 	if (channel.invited.count(client.nickname))
 		channel.invited.erase(client.nickname);
 
-	std::cout << client.nickname << " joined " << channel.name << std::endl;
+	std::cout << formatDate() << "Client#" << client.fd << "(" << client.nickname << ") joined " << channel.name << std::endl;
 	return (0);
 
 }
@@ -54,13 +58,15 @@ int		server::initChannel(int fd, std::string& name)
 	if (name.empty() || name[0] != '#' || name.size() < 2 || name.size() > 50 ||
 		name.find(' ') != std::string::npos || name.find(',') != std::string::npos)
 	{
-		std::cout << "error invalid channel name" << std::endl;  //! SEND TO CLIENT
+		std::string err = ERR_BADCHANMASK(std::string(SERV), name);
+		ft_send(fd, err);
 		return (-1);
 	}
 
 	if (channels_.count(name))
 	{
-		std::cout << "error channel already exists" << std::endl;  //! SEND TO CLIENT
+		std::string err = ERR_CHANNELALREADYEXISTS(std::string(SERV), name);
+		ft_send(fd, err);
 		return (-1);
 	}
 
@@ -78,16 +84,17 @@ int		server::initChannel(int fd, std::string& name)
 	channels_[name] = newChannel;
 	clients_[fd].joinedChannels.insert(name); 
 
-	std::cout << "created channel " << name << " by user " << clients_[fd].nickname << std::endl;
+	std::cout << formatDate() << "Client#" << fd << "(" << clients_[fd].nickname << ") created channel: " << name << std::endl;
 	return (0);
 }
 
 
-int		server::join(Client &client, std::istringstream &iss)
+int		server::join(Client &client, std::istringstream &iss, std::string &cmd)
 {
 	if (!client.isRegistered)
 	{
-		std::cout << "user not registered" << std::endl;	//! SEND TO CLIENT
+		std::string err =  ERR_NOTREGISTERED(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 	
@@ -98,14 +105,15 @@ int		server::join(Client &client, std::istringstream &iss)
 
 	if (name.empty())
 	{
-		std::cout << "Error: JOIN requires at least one argument (#channel)" << std::endl;		//! SEND TO CLIENT
+		std::string err =  ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, cmd);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 
 	if (!extra.empty())
 	{
-		std::cout << "Error: Too many parameters for JOIN Command" << std::endl; 		//! SEND TO CLIENT
-		std::cout << "correct usage: JOIN <#channel> <(optional)password>" << std::endl; //! SEND TO CLIENT
+		std::string err = ERR_TOOMANYPARAMS_J(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 

@@ -8,3 +8,8 @@ https://irssi.org/New-users/
 When the PRIVMSG message is sent from a server to a client and <target> starts with a dollar character ('$', 0x24), the message is a broadcast sent to all clients on one or multiple servers.
 
 //from irssi client cant send a message
+
+//error codes missing
+//trying to register twice gives you abck somethig wierd with Nameelse1s
+//ft_send or send?
+//timestamps needed somewhere

@@ -79,15 +79,15 @@ int server::executeCommands(int client_fd, const std::string& command)
             break;
 
         case CMD_JOIN:			//! UNTESTED
-            join(client, iss);
+            join(client, iss, cmd);
             break;
 
 		case CMD_KICK:		//! UNTESTED
-			kick(client, iss);
+			kick(client, iss, cmd);
 			break;
 
 		case CMD_INVITE:		//! UNTESTED
-			invite(client, iss);
+			invite(client, iss, cmd);
 			break;
 
 		case CMD_PART:			//! UNTESTED
@@ -99,7 +99,7 @@ int server::executeCommands(int client_fd, const std::string& command)
 			break;
 
 		case CMD_MODE:		//! UNTESTED
-			mode(client, iss);
+			mode(client, iss, cmd);
 			break;
 
 		case CMD_PING:

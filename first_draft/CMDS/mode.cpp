@@ -1,23 +1,26 @@
 #include "../server.hpp"
 
-int		server::mode(Client &client, std::istringstream &iss)
+int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 {
 	if (!client.isRegistered)
 	{
-		std::cout << "user not registered" << std::endl;	//! SEND TO CLIENT 
+		std::string err =  ERR_NOTREGISTERED(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 
 	std::string name; 
 	if (!(iss >> name) || name.empty())
 	{
-		std::cout << "Error: MODE requires a channel" << std::endl; //! SEND TO CLIENT
+		std::string err =  ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, cmd);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 
 	if (name.find(',') != std::string::npos)
 	{
-        std::cout << "Error: multiple channels not supported" << std::endl;       //! SEND TO CLIENT
+        std::string err = ERR_TOOMANYCHAN(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
         return (-1);
     }
 
@@ -25,7 +28,8 @@ int		server::mode(Client &client, std::istringstream &iss)
 	std::map<std::string, Channel>::iterator it = channels_.find(name);
 	if (it == channels_.end())
 	{
-		std::cout << "Error: channel not found" << std::endl;		//! SEND TO CLIENT
+		std::string err = ERR_NOSUCHCHANNEL(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 	Channel& channel = it->second;
@@ -46,7 +50,8 @@ int		server::mode(Client &client, std::istringstream &iss)
 
 	if (channel.operators.count(client.fd) == 0) 
 	{
-    	std::cout << "Error: You're not a channel operator\n" << std::endl;		//! SEND TO CLIENT
+    	std::string err = ERR_CHANOPRIVSNEEDED(std::string(SERV), client.nickname, channel.name);
+		ft_send(client.fd, err);
     	return (-1);
 	}
 

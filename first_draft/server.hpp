@@ -90,18 +90,18 @@ class server
 		int		recieveMessage(std::vector<pollfd> fds, size_t i, char *buffer, ssize_t bytes);
 
 		//COMMANDS
-		int		authenticate(Client &client, std::istringstream &iss);		//# PASS
-		void	setNick(Client &client, std::istringstream &iss);			//# NICK
-		void	setUser(Client &client, std::istringstream &iss);			//# USER
-		int		quit(Client &client, std::istringstream &iss);				//# QUIT
-		void	cap(Client &client, std::istringstream &iss);				//# CAP
-		int		join(Client &client, std::istringstream &iss);				//# JOIN
-		int		part(Client &client, std::istringstream &iss);				//# PART
-		int		topic(Client &client, std::istringstream &iss);				//# TOPIC
-		int		mode(Client &client, std::istringstream &iss);				//# MODE
-		int		kick(Client &client, std::istringstream &iss);				//# KICK
-		int		invite(Client &client, std::istringstream &iss);			//# INVITE
-		int		ping(Client &client, std::istringstream &iss);				//# PING
+		int		authenticate(Client &client, std::istringstream &iss);						//# PASS
+		void	setNick(Client &client, std::istringstream &iss);							//# NICK
+		void	setUser(Client &client, std::istringstream &iss);							//# USER
+		int		quit(Client &client, std::istringstream &iss);								//# QUIT
+		void	cap(Client &client, std::istringstream &iss);								//# CAP
+		int		join(Client &client, std::istringstream &iss, std::string &cmd);			//# JOIN
+		int		part(Client &client, std::istringstream &iss);								//# PART
+		int		topic(Client &client, std::istringstream &iss);								//# TOPIC
+		int		mode(Client &client, std::istringstream &iss, std::string &cmd);			//# MODE
+		int		kick(Client &client, std::istringstream &iss, std::string &cmd);			//# KICK
+		int		invite(Client &client, std::istringstream &iss, std::string &cmd);			//# INVITE
+		int		ping(Client &client, std::istringstream &iss);								//# PING
 
 		//CHANNEL HELPER
 		int		initChannel(int fd, std::string& name);
