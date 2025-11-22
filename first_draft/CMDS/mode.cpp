@@ -36,7 +36,8 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 
 	if (channel.members.count(client.fd) == 0)
 	{
-		std::cout << "Error: you're not part of the channel" << std::endl;		//! SEND TO CLIENT
+		std::string err = ERR_NOTONCHANNEL(std::string(SERV), client.nickname, channel.name);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 
@@ -99,7 +100,9 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 					{
 						if (!params.size() || paramsUsed >= (int)params.size())
 						{
-							std::cout << "Error: +k needs a key" << std::endl;   	//! SEND TO CLIENT
+							std::string err = ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, "MODE");
+    						ft_send(client.fd, err);
+							//std::cout << "Error: +k needs a key" << std::endl;
                         	return (-1);
 						}
 						channel.key = params[paramsUsed];
@@ -116,13 +119,17 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 					{
 						if (!params.size() || paramsUsed >= (int)params.size())
 						{
-							std::cout << "Error: +l needs a limit" << std::endl;   	//! SEND TO CLIENT
+							std::string err = ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, "MODE");
+    						ft_send(client.fd, err);
+							//std::cout << "Error: +l needs a limit" << std::endl;
                         	return (-1);
 						}
 
 						if (!isNumber(trim(params[paramsUsed])))
 						{
-							std::cout << "Error: limit can only contain numbers" << std::endl;   	//! SEND TO CLIENT
+							std::string err = ERR_INVALIDMODEPARAM(std::string(SERV), client.nickname, channel.name, "l", params[paramsUsed]);
+    						ft_send(client.fd, err);
+							//std::cout << "Error: limit can only contain numbers" << std::endl;
                         	return (-1);
 						}
 						int lim = std::atoi(params[paramsUsed].c_str());
@@ -140,13 +147,16 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 				{		
 						if (!params.size() || paramsUsed >= (int)params.size())
 						{
-							std::cout << "Error: +o/-o needs a username" << std::endl;   	//! SEND TO CLIENT
+							std::string err = ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, "MODE");
+    						ft_send(client.fd, err);
+							//std::cout << "Error: +o/-o needs a username" << std::endl;
                         	return (-1);
 						}
 
 						if (channel.operators.count(client.fd) == 0) 
 						{
-    						std::cout << "Error: You're not a channel operator" << std::endl;		//! SEND TO CLIENT
+    						std::string err = ERR_CHANOPRIVSNEEDED(std::string(SERV), client.nickname, channel.name);
+							ft_send(client.fd, err);
     						return (-1);
 						}
 
@@ -156,13 +166,15 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 						int targetFd = findClientByNick(targetNick);
 						if (targetFd == -1)
 						{
-							std::cout << "Error: no such nickname" << targetNick << std::endl;		//! SEND TO CLIENT
+							std::string err = E401(std::string(SERV), client.nickname, targetNick);
+							ft_send(client.fd, err);
     						return (-1);
 						}
 
 						if (channel.members.count(targetFd) == 0)
 						{
-							std::cout << "Error: user not found in channel" << targetNick << std::endl;		//! SEND TO CLIENT
+							std::string err = ERR_NOTONCHANNEL(std::string(SERV), client.nickname, channel.name);
+							ft_send(client.fd, err);
     						return (-1);
 						}
 
@@ -170,14 +182,16 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 						{
 							if (client.fd == targetFd)
 							{
-								std::cout << "Error: you are already operator" << std::endl;		//! SEND TO CLIENT
+								std::string err = ERR_CHANOPRIVSNEEDED(std::string(SERV), client.nickname, channel.name);
+								ft_send(client.fd, err);
     							return (-1);
 							}
 
 							if (channel.operators.count(targetFd))
 							{
-								std::cout << targetNick << " is already operator" << std::endl;		//! SEND TO CLIENT 
-								return (-1);														//maybe change to non fatal
+								std::string err = ERR_USERISOPERATOR(std::string(SERV), client.nickname, channel.name, targetNick);
+    							ft_send(client.fd, err);
+								//return (-1);														//maybe change to non fatal
 							}
 
 							channel.operators.insert(targetFd);
@@ -205,7 +219,7 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 				
 				default:
 
-					std::cout << "Warning: unknown mode '" << c << "' ignored" << std::endl; //!SEND to CLIENT
+					std::cout << "Warning: unknown mode '" << c << "' ignored" << std::endl; //! SEND to CLIENT
 					return (-1);
                     break;
 

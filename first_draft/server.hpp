@@ -96,8 +96,8 @@ class server
 		int		quit(Client &client, std::istringstream &iss);								//# QUIT
 		void	cap(Client &client, std::istringstream &iss);								//# CAP
 		int		join(Client &client, std::istringstream &iss, std::string &cmd);			//# JOIN
-		int		part(Client &client, std::istringstream &iss);								//# PART
-		int		topic(Client &client, std::istringstream &iss);								//# TOPIC
+		int		part(Client &client, std::istringstream &iss, std::string &cmd);			//# PART
+		int		topic(Client &client, std::istringstream &iss, std::string &cmd);			//# TOPIC
 		int		mode(Client &client, std::istringstream &iss, std::string &cmd);			//# MODE
 		int		kick(Client &client, std::istringstream &iss, std::string &cmd);			//# KICK
 		int		invite(Client &client, std::istringstream &iss, std::string &cmd);			//# INVITE

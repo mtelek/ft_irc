@@ -91,11 +91,11 @@ int server::executeCommands(int client_fd, const std::string& command)
 			break;
 
 		case CMD_PART:			//! UNTESTED
-			part(client, iss);
+			part(client, iss, cmd);
 			break;
 
 		case CMD_TOPIC: 	//! UNTESTED
-			topic(client, iss);
+			topic(client, iss, cmd);
 			break;
 
 		case CMD_MODE:		//! UNTESTED

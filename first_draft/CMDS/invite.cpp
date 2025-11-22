@@ -52,14 +52,14 @@ int		server::invite(Client &client, std::istringstream &iss, std::string &cmd)
 	}
 	Channel &channel = it->second;
 
-	if (channel.members.count(client.fd) == 0) //when do we reach this?
+	if (channel.members.count(client.fd) == 0)
 	{
 		std::string err = ERR_NOTONCHANNEL(std::string(SERV), client.nickname, channelName);
 		ft_send(client.fd, err);
 		return (-1);
 	}
 
-	if (channel.operators.count(client.fd) == 0)  //when do we reach this?
+	if (channel.operators.count(client.fd) == 0)
 	{
 		std::string err = ERR_CHANOPRIVSNEEDED(std::string(SERV), client.nickname, channelName);
 		ft_send(client.fd, err);
@@ -74,7 +74,7 @@ int		server::invite(Client &client, std::istringstream &iss, std::string &cmd)
 		return (-1);
 	}
 
-	if (channel.members.count(target_fd)) //what does this do?
+	if (channel.members.count(target_fd))
 	{
 		std::string err = ERR_USERONCHANNEL(std::string(SERV), client.nickname, channelName);
 		ft_send(client.fd, err);

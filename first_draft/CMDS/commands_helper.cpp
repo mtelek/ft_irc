@@ -49,6 +49,7 @@ std::string	server::getStartDate()
 
 void	server::sendWelcome(Client &client)
 {
+	//WELCOME MESSAGE
 	std::string welcome = RPL_WELCOME(std::string(SERV), client.nickname, SERVER_NAME, client.username, client.hostname);
 	std::string yourhost = RPL_YOURHOST(std::string(SERV), client.nickname, SERVER_NAME, VERSION);
 	std::string created = RPL_CREATED(std::string(SERV), client.nickname, startDate);

@@ -14,20 +14,23 @@ int		server::privmsg2Channel(Client &client, std::string &target, std::string &m
 
 	if (it == channels_.end())
 	{
-		std::cout << "Error: no such channel found" << std::endl;	//! SEND TO CLIENT (ERR_NOSUCHCHANNEL 403)
+		std::string err = ERR_NOSUCHCHANNEL(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
 		return (1);
 	}
 	Channel& channel = it->second;
 
 	if (channel.members.count(client.fd) == 0)
 	{
-		std::cout << "Error: you are not member of that channel" << std::endl;	//! SEND TO CLIENT (ERR_NOTONCHANNEL 442)
+		std::string err = ERR_NOTONCHANNEL(std::string(SERV), client.nickname, channel.name);
+		ft_send(client.fd, err);
 		return (1);
 	}
 
 	if (message.empty())
 	{
-		std::cout << "Error: message required" << std::endl;		//! SEND TO CLIENT (ERR_NOTEXTTOSEND 412)
+		std::string err = ERR_NOTEXTTOSEND(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
 		return (1);
 	}
 
@@ -35,7 +38,6 @@ int		server::privmsg2Channel(Client &client, std::string &target, std::string &m
 		message.erase(0, 1);
 	
 	std::string	out_msg = ":" + client.nickname +  " PRIVMSG " + target + " :" + message + "\r\n";
-
 	for  (std::set<int>::iterator m = channel.members.begin(); m != channel.members.end(); m++)
 	{
 		int member_fd = *m;
@@ -54,12 +56,13 @@ int		server::privmsg2Channel(Client &client, std::string &target, std::string &m
 
 int		server::privmsg2Client(Client &client, std::string &target, std::string &message)
 {
-	std::cout << "PRIVMS TEST TEST TEST" << std::endl;
+	//std::cout << "PRIVMS TEST TEST TEST" << std::endl;
 	int target_fd = findClientByNick(target);
 	std::cout << target_fd << std::endl;
 	if (target_fd == -1)
 	{
-		std::cout << "no such target found" << std::endl;	//! SEND TO CLIENT
+		std::string err = E401(std::string(SERV), client.nickname, target);
+    	ft_send(client.fd, err);
 		return (-1);
 	}
 	
@@ -67,7 +70,6 @@ int		server::privmsg2Client(Client &client, std::string &target, std::string &me
 		message.erase(0, 1);
 	
 	std::string new_message = ":" + client.nickname + " PRIVMSG " + target + " :" + message + "\r\n";
-
 	std::cout << new_message << std::endl;
 	if (ft_send(target_fd, new_message) == -1)
 	{
@@ -96,7 +98,7 @@ int		server::ft_send(int fd, std::string &message)	//! maybe change this funcion
 	return (0);
 }
 
-void server::sendPrivate(Client &client, std::istringstream &iss)
+void server::sendPrivate(Client &client, std::istringstream &iss) //should be an int function so we could return -1
 {
 	std::string target;
 	iss >> target;
@@ -109,32 +111,36 @@ void server::sendPrivate(Client &client, std::istringstream &iss)
 
 	if (!client.isRegistered) 
 	{
-		std::cout << "user not registered" << std::endl;	//! SEND TO CLIENT
+		std::string err =  ERR_NOTREGISTERED(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
 		return ;
     }
 
 	if (target.find(',') != std::string::npos)
 	{
-        std::cout << "Error: multiple channels not supported\n" << std::endl;            //! SEND TO CLIENT
+        std::string err = ERR_TOOMANYCHAN(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
         return;
     }
 
 	if (target.empty()) 
 	{
-        std::cout << "Error: privmsg requires a target\n" << std::endl;            //! SEND TO CLIENT
+        std::string err = ERR_NORECIPIENT(std::string(SERV), client.nickname, "PRIVMSG");
+    	ft_send(client.fd, err);
         return;
     }
 
 	if (message.empty()) 
 	{
-		std::string error = E412(std::string(SERV), client.nickname);
+		std::string error = ERR_NOTEXTTOSEND(std::string(SERV), client.nickname);
 		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
         return;
     }
 
 	if (!isChannel(target) && target[0] == '#')
 	{
-		std::cout << "Error: no such channel found" << std::endl;	//! SEND TO CLIENT
+		std::string err = ERR_NOSUCHCHANNEL(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
 		return;
 	}
 

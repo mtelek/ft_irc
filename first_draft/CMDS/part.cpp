@@ -1,10 +1,11 @@
 #include "../server.hpp"
 
-int		server::part(Client &client, std::istringstream &iss)
+int		server::part(Client &client, std::istringstream &iss, std::string &cmd)
 {
 	if (!client.isRegistered)
 	{
-		std::cout << "user not registered" << std::endl;	//! SEND TO CLIENT
+		std::string err =  ERR_NOTREGISTERED(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 
@@ -13,13 +14,15 @@ int		server::part(Client &client, std::istringstream &iss)
 
 	if (name.empty())
 	{
-		std::cout << "Error: Too few parameters for PART Command" << std::endl; 		//! SEND TO CLIENT
+		std::string err =  ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, cmd);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 
 	if (name.find(',') != std::string::npos)
 	{
-        std::cout << "Error: multiple channels not supported\n" << std::endl;            //! SEND TO CLIENT
+        std::string err = ERR_TOOMANYCHAN(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
         return (-1);
     }
 
@@ -37,7 +40,8 @@ int		server::part(Client &client, std::istringstream &iss)
 	std::map<std::string, Channel>::iterator it = channels_.find(name);
 	if (it == channels_.end())
 	{
-		std::cout << "Error: channel not found" << std::endl;		//! SEND TO CLIENT
+		std::string err = ERR_NOSUCHCHANNEL(std::string(SERV), client.nickname);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 	Channel& channel = it->second;	
@@ -45,7 +49,8 @@ int		server::part(Client &client, std::istringstream &iss)
 	//# VERIFY MEMBERSHIP
 	if (channel.members.count(client.fd) == 0)
 	{
-		std::cout << "Error: your not part of the channel" << std::endl;		//! SEND TO CLIENT
+		std::string err = ERR_NOTONCHANNEL(std::string(SERV), client.nickname, channel.name);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 

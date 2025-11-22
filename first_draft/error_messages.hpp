@@ -41,8 +41,9 @@
 
 //SENDPRIVATE
 #define S465(serv,nick) serv + " 465 " + nick + " :Message sent\r\n"
-#define E412(serv,nick) serv + " 412 " + nick + " :No text to send\r\n"
 #define E401(serv, nick, target) serv + " 401 " + nick + " :" + target + " :No such nick\r\n"
+#define ERR_NOTEXTTOSEND(serv, nick) serv + " 412 " + nick + " :No text to send\r\n"
+#define ERR_NORECIPIENT(serv, nick, command) serv + " 411 " + nick + " :No recipient given (" + command + ")\r\n"
 
 //CLIENT WELCOME MESSAGE
 #define RPL_WELCOME(serv, nick, server, user, host) serv + " 001 " + nick + " :Welcome to the " + server + " Network, " + nick + "[!" + user + "@" + host + "]\r\n"
@@ -71,6 +72,14 @@
 
 //KICK - CHANNEL
 #define ERR_USERNOTINCHANNEL(serv, nick, target, channel) serv + " 441 " + nick + " " + target + " " + channel + " :They aren't on that channel\r\n"
+
+//TOPIC - CHANNEL
+#define RPL_NOTOPIC(serv, nick, channel) serv + " 331 " + nick + " " + channel + " :No topic is set\r\n"
+#define RPL_TOPIC(serv, nick, channel, topic) serv + " 332 " + nick + " " + channel + " :" + topic + "\r\n"
+
+//MODE - CHANNEL
+#define ERR_INVALIDMODEPARAM(serv, nick, channel, mode, param) serv + " 696 " + nick + " " + channel + " " + mode + " " + param + " :Invalid mode parameter\r\n"
+#define ERR_USERISOPERATOR(serv, nick, channel, target) serv + " 400 " + nick + " " + target + " " + channel + " :is already a channel operator\r\n"
 
 
 // // 400-499: Client errors
