@@ -1,7 +1,5 @@
 #include "../server.hpp"
 
-//# maybe implement to a ping function to ping a server to see if still connected but not needed
-
 int		server::ping(Client &client, std::istringstream &iss)
 {
 	std::string message;
@@ -15,7 +13,6 @@ int		server::ping(Client &client, std::istringstream &iss)
 
 	std::string out_msg = "PONG " + message + "\r\n";
 	ft_send(client.fd, out_msg);
-
 	return (0);
 }
 

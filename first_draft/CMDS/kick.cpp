@@ -6,7 +6,7 @@ int		server::kick(Client &client, std::istringstream &iss, std::string &cmd)
 	{
 		std::string err =  ERR_NOTREGISTERED(std::string(SERV), client.nickname);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	std::string	channelName;
@@ -19,21 +19,21 @@ int		server::kick(Client &client, std::istringstream &iss, std::string &cmd)
 	{
 		std::string err =  ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, cmd);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 	
 	if (channelName.find(',') != std::string::npos)
 	{
 		std::string err = ERR_TOOMANYCHAN(std::string(SERV), client.nickname);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	if (targetName.find(',') != std::string::npos)
 	{
 		std::string err = ERR_TOOMANYTARGETS(std::string(SERV), client.nickname);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	std::string comment;
@@ -56,44 +56,44 @@ int		server::kick(Client &client, std::istringstream &iss, std::string &cmd)
 		comment = "Kicked";
 
 	//# channel must exist
-	std::map<std::string, Channel>::iterator it = channels_.find(channelName);
+	std::map<std::string, Channel>::iterator it = channels_.find(toLowerString(channelName));
 	if (it == channels_.end())
 	{
 		std::string err =  ERR_NOSUCHCHANNEL(std::string(SERV), client.nickname);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 	Channel &channel = it->second;
 
-	//# client must be menber and operator on that channel
+	//# CLIENT MUST BE MEMBER AND OPERATOR ON THE CHANNEL
 	if (channel.members.count(client.fd) == 0)
 	{
 		std::string err = ERR_NOTONCHANNEL(std::string(SERV), client.nickname, channelName);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	if (channel.operators.count(client.fd) == 0)
 	{
 		std::string err = ERR_CHANOPRIVSNEEDED(std::string(SERV), client.nickname, channelName);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
-	//# target must exist and be member in channel
+	//# TARGET MUST EXISTS AND BE MEMBER OF THE CHANNEL
 	int target_fd = findClientByNick(targetName);
 	if (target_fd == -1)
 	{
 		std::string err =  E401(std::string(SERV), client.nickname, targetName);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	if (channel.members.count(target_fd) == 0)
 	{
 		std::string err = ERR_USERNOTINCHANNEL(std::string(SERV), client.nickname, targetName, channel.name);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	std::string out_msg;

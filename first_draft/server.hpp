@@ -91,10 +91,10 @@ class server
 
 		//COMMANDS
 		int		authenticate(Client &client, std::istringstream &iss);						//# PASS
-		void	setNick(Client &client, std::istringstream &iss);							//# NICK
-		void	setUser(Client &client, std::istringstream &iss);							//# USER
+		int		setNick(Client &client, std::istringstream &iss);							//# NICK
+		int		setUser(Client &client, std::istringstream &iss);							//# USER
 		int		quit(Client &client, std::istringstream &iss);								//# QUIT
-		void	cap(Client &client, std::istringstream &iss);								//# CAP
+		int		cap(Client &client, std::istringstream &iss);								//# CAP
 		int		join(Client &client, std::istringstream &iss, std::string &cmd);			//# JOIN
 		int		part(Client &client, std::istringstream &iss, std::string &cmd);			//# PART
 		int		topic(Client &client, std::istringstream &iss, std::string &cmd);			//# TOPIC
@@ -108,14 +108,14 @@ class server
 		int		addUser(int fd, Channel& channel);
 		std::string		getModes(Channel &channel);
 		bool	isNumber(const std::string& s);
-		int		findClientByNick(const std::string& nick);			//! make this function CASE insensitive
+		int		findClientByNick(const std::string& nick);
 
 		//PRIVMSG HELPER
 		int		isChannel(std::string &target);
 		int		privmsg2Channel(Client &client, std::string &target, std::string &message);
 		int		privmsg2Client(Client &client, std::string &target, std::string &message); 
 		int		ft_send(int fd, std::string &message);
-		void	sendToAllChannelMembers(Channel &channel, std::string &message);
+		int 	sendToAllChannelMembers(Channel &channel, std::string &message);
 
 
 		//USER HELPER
@@ -123,13 +123,13 @@ class server
 		bool	isNameTaken(std::string Client::* member, const std::string& name);
 		void	checkRegistration(Client &client);
 		void	sendWelcome(Client &client);
-		bool	isValidName(Client &client, std::string &nickname);
+		int		isValidName(Client &client, std::string &nickname);
 		bool	isValidLength(const std::string& str, size_t maxLength);
 		static std::string	getStartDate();
 		std::string toLowerString(const std::string& str);
 
 		//SENDING MESSAGE COMMANDS
-		void		sendPrivate(Client &client, std::istringstream &iss);
+		int		sendPrivate(Client &client, std::istringstream &iss);
 		std::string	trim(const std::string& str);
 
 		//SIGHANDLER

@@ -14,12 +14,14 @@ int server::authenticate(Client &client, std::istringstream &iss)
 	std::string password;
 	iss >> password;
 	
+	if (client.hasPassword)
+		return 1;
 	if (client.isRegistered == true)
 	{
 		//INVALID - REREGISTRATION
 		std::cout << formatDate() << "Client#" << client.fd << " -> PASS " << password << "\n";
 		std::string error = E462(std::string(SERV), client.nickname);
-		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
+		ft_send(client.fd, error);
 		return (1);
 	}
 	else if (password.empty())
@@ -27,7 +29,7 @@ int server::authenticate(Client &client, std::istringstream &iss)
 		//INVALID - EMPTY PASSWORD
 		std::cout << formatDate() << "Client#" << client.fd << " -> PASS \n";
 		std::string error = E461(std::string(SERV), client.nickname, "PASS");
-		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
+		ft_send(client.fd, error);
 		return (1);
 	}
 	else if (password == password_)
@@ -36,7 +38,7 @@ int server::authenticate(Client &client, std::istringstream &iss)
 		client.hasPassword = true;
 		std::cout << formatDate() << "Client#" << client.fd << " -> PASS ****\n";
 		std::string success = S467(std::string(SERV), client.nickname);
-		send(client.fd, success.c_str(), success.length(), MSG_DONTWAIT);
+		ft_send(client.fd, success);
 	}
 	else
 	{
@@ -45,7 +47,7 @@ int server::authenticate(Client &client, std::istringstream &iss)
 		if (maxAttemptsReached(client) == true)
 		{
 			std::string disconnect_msg = E4642(std::string(SERV), client.nickname);
-			send(client.fd, disconnect_msg.c_str(), disconnect_msg.length(), MSG_DONTWAIT);
+			ft_send(client.fd, disconnect_msg);
 			close(client.fd);
 			std::cout << formatDate() << "Client#" << client.fd << " disconnected\n";
 			return (-1);
@@ -53,7 +55,7 @@ int server::authenticate(Client &client, std::istringstream &iss)
 		else
 		{
 			std::string error = E464(std::string(SERV), client.nickname);
-			send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
+			ft_send(client.fd, error);
 		}
 	}
 	return (0);

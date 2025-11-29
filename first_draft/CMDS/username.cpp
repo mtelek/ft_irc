@@ -1,7 +1,7 @@
 
 #include "../server.hpp"
 
-void server::setUser(Client &client, std::istringstream &iss)
+int server::setUser(Client &client, std::istringstream &iss)
 {
 	std::string username, hostname, servername, realname;
 	iss >> username >> hostname >> servername;
@@ -9,28 +9,28 @@ void server::setUser(Client &client, std::istringstream &iss)
 	realname = trim(realname);
 	
 	std::cout << formatDate() << "Client#" << client.fd << " -> USER " << username << " " << hostname << " " << servername << " " << realname << "\n";
-	if (!client.hasPassword) //!  still wrong, after trying to register twice
-		return ;
+	if (!client.hasPassword) //! you sure about return value?
+		return (0);
 	if (client.isRegistered == true)
 	{
 		//INVALID - REREGISTRATION
 		std::string error = E462(std::string(SERV), client.nickname);
-		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
-		return ;
+		ft_send(client.fd, error);
+		return (0);
 	}
 	if (username.empty() || hostname.empty() || servername.empty() || realname.empty())
 	{
 		//INVALID - EMPTY ARGUMENTS
 		std::string error = E461(std::string(SERV), client.nickname, "USER");
-		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
-		return ;
+		ft_send(client.fd, error);
+		return (0);
 	}
 	if (!isValidLength(username, 9) || !isValidLength(realname, 9))
 	{
 		//USERNAME OR REALNAME TOO LONG
 		std::string error = E4323(std::string(SERV), client.nickname);
-		send(client.fd, error.c_str(), error.length(), MSG_DONTWAIT);
-		return ;
+		ft_send(client.fd, error);
+		return (0);
 	}
 	else if (!realname.empty() && realname[0] == ':')
 		realname = realname.substr(1);
@@ -40,9 +40,10 @@ void server::setUser(Client &client, std::istringstream &iss)
 	
 	//USERNAME SET
 	std::string success = S411(std::string(SERV), client.nickname, username);
-	send(client.fd, success.c_str(), success.length(), MSG_DONTWAIT);
+	ft_send(client.fd, success);
 	
 	//REALNAME SET
 	success = S412(std::string(SERV), client.nickname, realname);
-	send(client.fd, success.c_str(), success.length(), MSG_DONTWAIT);
+	ft_send(client.fd, success);
+	return (0);
 }

@@ -1,6 +1,6 @@
 #include "../server.hpp"
 
-void server::cap(Client &client, std::istringstream &iss)
+int server::cap(Client &client, std::istringstream &iss)
 {
 	std::string subcmd;
 	iss >> subcmd;
@@ -9,7 +9,7 @@ void server::cap(Client &client, std::istringstream &iss)
 	{
 		// Send minimal capabilities or none
 		std::string response = "CAP * LS :\r\n";
-		send(client.fd, response.c_str(), response.length(), MSG_DONTWAIT);
+		ft_send(client.fd, response);
 	}
 	else if (subcmd == "REQ")
 	{
@@ -17,7 +17,9 @@ void server::cap(Client &client, std::istringstream &iss)
 		std::string caps;
 		std::getline(iss, caps);
 		std::string response = "CAP * ACK " + caps + "\r\n";
-		send(client.fd, response.c_str(), response.length(), MSG_DONTWAIT);
+		ft_send(client.fd, response);
 	}
-	else if (subcmd == "END") {}
+	else if (subcmd == "END")
+	{}
+	return (0);
 }

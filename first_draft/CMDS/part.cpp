@@ -37,7 +37,7 @@ int		server::part(Client &client, std::istringstream &iss, std::string &cmd)
     	reason.erase(0, 1);
 
 	//# FIND CHANNEL
-	std::map<std::string, Channel>::iterator it = channels_.find(name);
+	std::map<std::string, Channel>::iterator it = channels_.find(toLowerString(name));
 	if (it == channels_.end())
 	{
 		std::string err = ERR_NOSUCHCHANNEL(std::string(SERV), client.nickname);
@@ -47,7 +47,7 @@ int		server::part(Client &client, std::istringstream &iss, std::string &cmd)
 	Channel& channel = it->second;	
 
 	//# VERIFY MEMBERSHIP
-	if (channel.members.count(client.fd) == 0)
+	if (channel.members.count(client.fd) == 0) 
 	{
 		std::string err = ERR_NOTONCHANNEL(std::string(SERV), client.nickname, channel.name);
 		ft_send(client.fd, err);

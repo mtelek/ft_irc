@@ -115,6 +115,7 @@ void    server::run()
 			sockaddr_in client_addr;
 			socklen_t client_len = sizeof(client_addr);
 			int client_fd = accept(server_fd_, (sockaddr*)&client_addr, &client_len);
+			//std::cout << "Client fd: " << client_fd << std::endl;
 			if (client_fd != -1)
 			{
 				fcntl(client_fd, F_SETFL, O_NONBLOCK);
@@ -144,7 +145,7 @@ void    server::run()
 					fds.erase(fds.begin() + i);
 					i--;
 				}
-				else if (recieveMessage(fds, i, buffer, bytes) == -1)
+				else if (recieveMessage(fds, i, buffer, bytes) == -1) //! delete client data, and implement the function here 
 				{
 					close(fds[i].fd);
 					clients_.erase(fds[i].fd);

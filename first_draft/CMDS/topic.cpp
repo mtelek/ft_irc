@@ -26,7 +26,7 @@ int		server::topic(Client &client, std::istringstream &iss, std::string &cmd)
     }
 
 	//# FIND CHANNEL
-	std::map<std::string, Channel>::iterator it = channels_.find(name);
+	std::map<std::string, Channel>::iterator it = channels_.find(toLowerString(name));
 	if (it == channels_.end())
 	{
 		std::string err = ERR_NOSUCHCHANNEL(std::string(SERV), client.nickname);
@@ -69,10 +69,8 @@ int		server::topic(Client &client, std::istringstream &iss, std::string &cmd)
 		ft_send(client.fd, err);
 		return (-1);
 	}
-
 	channel.topic = newTopic;
-
-	//# send to all members
-	std::cout << "Topic for " << channel.name << " changed to: " << newTopic << std::endl; //needed to implement
+	std::string message = "Topic for " + channel.name + " changed to: " + newTopic + "\r\n";
+	sendToAllChannelMembers(channel, message);
 	return (0);
 }

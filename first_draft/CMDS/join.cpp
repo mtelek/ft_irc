@@ -9,7 +9,7 @@ int		server::addUser(int fd, Channel& channel)
 	{
 		std::string err = ERR_USERONCHANNEL(std::string(SERV), client.nickname, channel.name);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	//# +i (invite-only)
@@ -17,7 +17,7 @@ int		server::addUser(int fd, Channel& channel)
 	{
 		std::string err = ERR_INVITEONLYCHAN(std::string(SERV), client.nickname, channel.name);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	//# +l (user limit)
@@ -25,7 +25,7 @@ int		server::addUser(int fd, Channel& channel)
 	{
 		std::string err = ERR_CHANNELISFULL(std::string(SERV), client.nickname, channel.name);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	//# +k (key)
@@ -33,7 +33,7 @@ int		server::addUser(int fd, Channel& channel)
 	{
 		std::string err = ERR_BADCHANNELKEY(std::string(SERV), client.nickname, channel.name);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	//# JOIN
@@ -60,14 +60,14 @@ int		server::initChannel(int fd, std::string& name)
 	{
 		std::string err = ERR_BADCHANMASK(std::string(SERV), name);
 		ft_send(fd, err);
-		return (-1);
+		return (1);
 	}
 
 	if (channels_.count(name))
 	{
 		std::string err = ERR_CHANNELALREADYEXISTS(std::string(SERV), name);
 		ft_send(fd, err);
-		return (-1);
+		return (1);
 	}
 
 	Channel newChannel;
@@ -95,7 +95,7 @@ int		server::join(Client &client, std::istringstream &iss, std::string &cmd)
 	{
 		std::string err =  ERR_NOTREGISTERED(std::string(SERV), client.nickname);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 	
 	std::string name;
@@ -107,19 +107,19 @@ int		server::join(Client &client, std::istringstream &iss, std::string &cmd)
 	{
 		std::string err =  ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, cmd);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	if (!extra.empty())
 	{
 		std::string err = ERR_TOOMANYPARAMS_J(std::string(SERV), client.nickname);
 		ft_send(client.fd, err);
-		return (-1);
+		return (1);
 	}
 
 	client.userKey = key;
 
-	std::map<std::string, Channel>::iterator it = channels_.find(name);
+	std::map<std::string, Channel>::iterator it = channels_.find(toLowerString(name));
 
 	if (it == channels_.end())
 	{

@@ -25,7 +25,7 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 	}
 
 
-	std::map<std::string, Channel>::iterator it = channels_.find(name);
+	std::map<std::string, Channel>::iterator it = channels_.find(toLowerString(name));
 	if (it == channels_.end())
 	{
 		std::string err = ERR_NOSUCHCHANNEL(std::string(SERV), client.nickname);
@@ -46,8 +46,8 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 	if (token.empty())
 	{
 		std::string modes = getModes(channel);
-		ft_send(client.fd, modes);
-		//std::cout << getModes(channel) << std::endl;
+		if (ft_send(client.fd, modes) == -1)
+			return (-1);
 		return (0);
 	}
 
@@ -104,7 +104,6 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 						{
 							std::string err = ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, "MODE");
 							ft_send(client.fd, err);
-							//std::cout << "Error: +k needs a key" << std::endl;
 							return (-1);
 						}
 						channel.key = params[paramsUsed];
@@ -123,7 +122,6 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 						{
 							std::string err = ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, "MODE");
 							ft_send(client.fd, err);
-							//std::cout << "Error: +l needs a limit" << std::endl;
 							return (-1);
 						}
 
@@ -131,7 +129,6 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 						{
 							std::string err = ERR_INVALIDMODEPARAM(std::string(SERV), client.nickname, channel.name, "l", params[paramsUsed]);
 							ft_send(client.fd, err);
-							//std::cout << "Error: limit can only contain numbers" << std::endl;
 							return (-1);
 						}
 						int lim = std::atoi(params[paramsUsed].c_str());
@@ -151,7 +148,6 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 						{
 							std::string err = ERR_NEEDMOREPARAMS(std::string(SERV), client.nickname, "MODE");
 							ft_send(client.fd, err);
-							//std::cout << "Error: +o/-o needs a username" << std::endl;
 							return (-1);
 						}
 
@@ -193,7 +189,7 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 							{
 								std::string err = ERR_USERISOPERATOR(std::string(SERV), client.nickname, channel.name, targetNick);
 								ft_send(client.fd, err);
-								//return (-1);														//! maybe change to non fatal
+								return (-1);
 							}
 
 							channel.operators.insert(targetFd);
@@ -214,7 +210,7 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 							{
 								std::string err = ERR_CANNOTREMOVEOPER(std::string(SERV), client.nickname, channel.name, targetNick);
     							ft_send(client.fd, err);
-								return (-1); //? is it fatal
+								return (-1);
 							}
 							
 							channel.operators.erase(targetFd);
@@ -228,8 +224,8 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 				default:
 
 					std::string err = ERR_UNKNOWNMODE(std::string(SERV), client.nickname, std::string(1, c));
-					ft_send(client.fd, err);
-					return (-1); //? why do we need this
+					if (ft_send(client.fd, err))
+						return (-1);
 					break;
 
 				}

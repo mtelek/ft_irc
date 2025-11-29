@@ -9,13 +9,12 @@ int	main(int argc, char **argv)
 
 	server server;
 	std::cout << server.formatDate() << "Server PID: " << getpid() << std::endl;
-
+	//! argv 1 is gonna be a port and we should check whether it only contains digits and its between 1024 and 65535
 	// if (argc != 3)
 	// {
 	// 	std::cerr << "Usage: ./irc <port> <password>" << std::endl;
 	// 	return (1);
 	// }
-
 	// int	port = atoi(argv[1]);
 	// std::string password = argv[2];
 

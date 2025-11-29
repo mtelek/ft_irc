@@ -37,7 +37,7 @@ int		server::findClientByNick(const std::string& nick)
 {
 	for (std::map<int, Client>::iterator it = clients_.begin(); it != clients_.end(); it++)
 	{
-		if (it->second.nickname == nick)
+		if (toLowerString(it->second.nickname) == toLowerString(nick))
 			return (it->second.fd);
 	}
 	return (-1);

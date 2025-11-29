@@ -80,51 +80,6 @@
 //MODE - CHANNEL
 #define ERR_INVALIDMODEPARAM(serv, nick, channel, mode, param) serv + " 696 " + nick + " " + channel + " " + mode + " " + param + " :Invalid mode parameter\r\n"
 #define ERR_USERISOPERATOR(serv, nick, channel, target) serv + " 400 " + nick + " " + target + " " + channel + " :is already a channel operator\r\n"
-#define ERR_NOPRIVILEGES(server, nick) (":" + server + " 481 " + nick + " :Permission Denied- You're not an IRC operator\r\n")
+#define ERR_NOPRIVILEGES(server, nick) (":" + server + " 481 " + nick + " :Permission Denied-cannot remove operator rights if you are only operator on the channel\r\n")
 #define ERR_CANNOTREMOVEOPER(server, nick, channel, target) (":" + server + " 481 " + nick + " " + channel + " :" + target + " is not a channel operator\r\n")
 #define ERR_UNKNOWNMODE(server, nick, mode) (":" + server + " 472 " + nick + " " + mode + " :is unknown mode char to me\r\n")
-
-
-// // 400-499: Client errors
-// #define E403 "<channel name> :No such channel"
-// #define E404 "<channel name> :Cannot send to channel"
-// #define E405 "<channel name> :You have joined too many channels"
-// #define E406 "<nickname> :There was no such nickname"
-// #define E407 "<target> :Duplicate recipients. No message delivered"
-// #define E409 ":No origin specified"
-// #define E451 ":You have not registered"
-// #define E465 ":You are banned from this server"
-
-// // Channel errors
-// #define E442 "<channel> :You're not on that channel"
-// #define E443 "<user> <channel> :is already on channel"
-// #define E451 ":You have not registered"
-// #define E471 "<channel> :Cannot join channel (+l)"
-// #define E473 "<channel> :Cannot join channel (+i)"
-// #define E474 "<channel> :Cannot join channel (+b)"
-// #define E475 "<channel> :Cannot join channel (+k)"
-// #define E476 "<channel> :Bad Channel Mask"
-
-// // MOTD (Message of the Day)
-// #define E375 ":- <server> Message of the Day - "
-// #define E372 ":- <text>"
-// #define E376 ":End of /MOTD command"
-
-// // Channel responses
-// #define E353 "<channel> :[[@|+]<nick> [[@|+]<nick> ...]]"
-// #define E366 "<channel> :End of /NAMES list"
-// #define E332 "<channel> :<topic>"
-// #define E333 "<channel> <nick> <time>"
-
-// // MODE errors
-// #define E472 "<char> :is unknown mode char to me"
-// #define E502 ":Cant change mode for other users"
-// #define E501 ":Unknown MODE flag"
-
-// // MUST HAVE - Messaging
-// #define E411 ":No recipient given (<command>)"
-
-// // MUST HAVE - Success responses
-// RPL_NAMREPLY          (S353)
-// RPL_ENDOFNAMES        (S366)
-// RPL_TOPIC             (S332)
