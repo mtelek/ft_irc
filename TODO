@@ -9,7 +9,7 @@ When the PRIVMSG message is sent from a server to a client and <target> starts w
 
 //from irssi client cant send a message
 
-//error codes missing
 //trying to register twice gives you abck somethig wierd with Nameelse1s
 //ft_send or send?
 //timestamps needed somewhere
+//error messages whats fatal whats not

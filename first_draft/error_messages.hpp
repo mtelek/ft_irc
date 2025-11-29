@@ -80,6 +80,9 @@
 //MODE - CHANNEL
 #define ERR_INVALIDMODEPARAM(serv, nick, channel, mode, param) serv + " 696 " + nick + " " + channel + " " + mode + " " + param + " :Invalid mode parameter\r\n"
 #define ERR_USERISOPERATOR(serv, nick, channel, target) serv + " 400 " + nick + " " + target + " " + channel + " :is already a channel operator\r\n"
+#define ERR_NOPRIVILEGES(server, nick) (":" + server + " 481 " + nick + " :Permission Denied- You're not an IRC operator\r\n")
+#define ERR_CANNOTREMOVEOPER(server, nick, channel, target) (":" + server + " 481 " + nick + " " + channel + " :" + target + " is not a channel operator\r\n")
+#define ERR_UNKNOWNMODE(server, nick, mode) (":" + server + " 472 " + nick + " " + mode + " :is unknown mode char to me\r\n")
 
 
 // // 400-499: Client errors

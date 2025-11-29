@@ -1,6 +1,15 @@
 
 #include "../server.hpp"
 
+void server::sendToAllChannelMembers(Channel &channel, std::string &message)  //? new fucntion
+{
+	std::set<int>::iterator it;
+	for (it = channel.members.begin(); it != channel.members.end(); ++it)
+	{
+		ft_send(*it, message);
+	}
+}
+
 int		server::isChannel(std::string &target)
 {
 	if (channels_.count(target) == 0)
@@ -38,7 +47,7 @@ int		server::privmsg2Channel(Client &client, std::string &target, std::string &m
 		message.erase(0, 1);
 	
 	std::string	out_msg = ":" + client.nickname +  " PRIVMSG " + target + " :" + message + "\r\n";
-	for  (std::set<int>::iterator m = channel.members.begin(); m != channel.members.end(); m++)
+	for  (std::set<int>::iterator m = channel.members.begin(); m != channel.members.end(); m++)  //! could be a seperate function
 	{
 		int member_fd = *m;
 		

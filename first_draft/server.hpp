@@ -115,6 +115,7 @@ class server
 		int		privmsg2Channel(Client &client, std::string &target, std::string &message);
 		int		privmsg2Client(Client &client, std::string &target, std::string &message); 
 		int		ft_send(int fd, std::string &message);
+		void	sendToAllChannelMembers(Channel &channel, std::string &message);
 
 
 		//USER HELPER
