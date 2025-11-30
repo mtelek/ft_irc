@@ -52,7 +52,7 @@ int		server::kick(Client &client, std::istringstream &iss, std::string &cmd)
 		}
 	}
 
-	if (!comment.empty()) //what does this do?
+	if (!comment.empty())
 		comment = "Kicked";
 
 	//# channel must exist
@@ -104,10 +104,7 @@ int		server::kick(Client &client, std::istringstream &iss, std::string &cmd)
 		if (clients_.count(member_fd) == 0)		continue;
 		
 		if (ft_send(member_fd, out_msg) == -1)
-		{
-			//! close client 
 			return (-1);
-		}
 	}
 	return (0);
 }

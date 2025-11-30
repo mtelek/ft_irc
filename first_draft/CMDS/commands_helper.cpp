@@ -15,12 +15,6 @@ std::string server::trim(const std::string& str)
 	return (str.substr(start, end - start + 1));
 }
 
-std::string server::formatDate()
-{
-	std::string date = "[" + getStartDate() + "] ";
-	return (date);
-}
-
 std::string server::toLowerString(const std::string& str)
 {
 	std::string lower = str;
@@ -29,7 +23,14 @@ std::string server::toLowerString(const std::string& str)
 	return (lower);
 }
 
-std::string	server::getStartDate()
+std::string server::formatDate(int state)
+{
+	std::string date = "[" + getStartDate(state) + "] ";
+	return (date);
+}
+
+
+std::string	server::getStartDate(int state)
 {
 	//GETTING THE START DATE OF THE SERVER OR THE SERVER MESSAGE
 	std::time_t now = std::time(NULL);
@@ -38,11 +39,14 @@ std::string	server::getStartDate()
 	std::stringstream ss;
 	ss << std::setfill('0');
 	ss << std::setw(2) << localTime->tm_hour << ":"
-		<< std::setw(2) << localTime->tm_min << ":"
-		<< std::setw(2) << localTime->tm_sec << " "
-		<< std::setw(2) << localTime->tm_mday << "/"
-		<< std::setw(2) << (localTime->tm_mon + 1) << "/"
-		<< (localTime->tm_year + 1900);
+		<< std::setw(2) << localTime->tm_min;
+	
+	if (state == 1)
+	{
+		ss << " " << std::setw(2) << localTime->tm_mday << "/"
+		<< std::setw(2) << (localTime->tm_mon + 1)
+		<< "/" << localTime->tm_year + 1900;
+	}
 	
 	return (ss.str());
 }
@@ -67,7 +71,7 @@ void	server::checkRegistration(Client &client)
 	if (client.hasPassword && client.hasNick && client.hasUser && !client.isRegistered)
 	{
 		client.isRegistered = true;
-		std::cout << formatDate() << "Client#" << client.fd << "'s (" << client.nickname << ") registration successful\n";
+		std::cout << formatDate(2) << "Client#" << client.fd << "'s (" << client.nickname << ") registration successful\n";
 		sendWelcome(client);
 	}
 }

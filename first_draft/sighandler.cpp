@@ -14,26 +14,27 @@
 
 void server::sigHandler(int signal)
 {
-    (void)signal;
-    std::cout << "\n" << formatDate() << "Received shutdown signal. Cleaning up..." << std::endl;
-    running_ = 0;
+	(void)signal;
+	std::cout << "\n" << formatDate(2) << "Received shutdown signal. Cleaning up..." << std::endl;
+	running_ = 0;
 }
 
 void server::cleanUp()
-{    
-    // CLOSE CLIENTS
-    for (std::map<int, Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
-    {
-        std::cout << formatDate() << "Closing Client#" << it->first << std::endl;
-        close(it->first);
-    }
-    clients_.clear();
-    // CLOSE SERVER
-    if (server_fd_ != -1)
-    {
-        std::cout << formatDate() << "Closing server socket" << std::endl;
-        close(server_fd_);
-        server_fd_ = -1;
-    }
-    std::cout << formatDate() << "Server shutdown complete." << std::endl;
+{   
+	// CLOSE CLIENTS
+	for (std::map<int, Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
+	{
+		std::cout << formatDate(2) << "Closing Client#" << it->first << std::endl;
+		close(it->first);
+	}
+	clients_.clear();
+
+	// CLOSE SERVER
+	if (server_fd_ != -1)
+	{
+		std::cout << formatDate(2) << "Closing server socket" << std::endl;
+		close(server_fd_);
+		server_fd_ = -1;
+	}
+	std::cout << formatDate(2) << "Server shutdown complete." << std::endl;
 }

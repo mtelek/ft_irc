@@ -84,9 +84,6 @@ int		server::invite(Client &client, std::istringstream &iss, std::string &cmd)
 	std::string out_msg;
 	out_msg = ":" + client.nickname + " INVITE " + targetName + " " + channelName + "\r\n";
 	if (ft_send(target_fd, out_msg) == -1)
-	{
-		//! close client 
 		return (-1);
-	}
 	return (0);
 }

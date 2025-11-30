@@ -30,10 +30,10 @@ class server
 {
 	private:
 
-		int             server_fd_;
-		sockaddr_in     server_addr_;    
-		int             port_;
-		std::string     password_;
+		int				server_fd_;
+		sockaddr_in		server_addr_;    
+		int				port_;
+		std::string		password_;
 		std::string		startDate;
 
 		//SIGHANDLER
@@ -53,7 +53,7 @@ class server
 
 			// Registration state tracking
 			bool hasNick;
-        	bool hasUser;
+			bool hasUser;
 			bool hasPassword;
 			bool isRegistered;
 
@@ -106,9 +106,9 @@ class server
 		//CHANNEL HELPER
 		int		initChannel(int fd, std::string& name);
 		int		addUser(int fd, Channel& channel);
-		std::string		getModes(Channel &channel);
 		bool	isNumber(const std::string& s);
 		int		findClientByNick(const std::string& nick);
+		std::string		getModes(Channel &channel);
 
 		//PRIVMSG HELPER
 		int		isChannel(std::string &target);
@@ -125,24 +125,24 @@ class server
 		void	sendWelcome(Client &client);
 		int		isValidName(Client &client, std::string &nickname);
 		bool	isValidLength(const std::string& str, size_t maxLength);
-		static std::string	getStartDate();
-		std::string toLowerString(const std::string& str);
+		std::string 		toLowerString(const std::string& str);
+		static std::string	getStartDate(int state);
 
 		//SENDING MESSAGE COMMANDS
 		int		sendPrivate(Client &client, std::istringstream &iss);
 		std::string	trim(const std::string& str);
 
 		//SIGHANDLER
+		void		cleanUp();
 		static void	sigHandler(int signal);
-		void	cleanUp();
 
 	public:
 		server();
 		~server();
 
-	int     init(int port, std::string password);
-	void    run();
-	static std::string formatDate();
+	int		init(int port, std::string password);
+	void	run();
+	static std::string formatDate(int state);
 };
 
 #endif

@@ -63,9 +63,12 @@ int server::setNick(Client &client, std::istringstream &iss)
 	std::string nickname;
 	iss >> nickname;
 
-	std::cout << formatDate() << "Client#" << client.fd << " -> NICK " << nickname << std::endl;
 	if (!client.hasPassword)
+	{
+		std::string error = ERR_AUTH_REQUIRED(std::string(SERV), client.nickname);
+		ft_send(client.fd, error);
 		return (1);
+	}
 	if (client.isRegistered == true)
 	{
 		//INVALID - REREGISTRATION

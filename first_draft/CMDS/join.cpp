@@ -48,7 +48,7 @@ int		server::addUser(int fd, Channel& channel)
 	if (channel.invited.count(client.nickname))
 		channel.invited.erase(client.nickname);
 
-	std::cout << formatDate() << "Client#" << client.fd << "(" << client.nickname << ") joined " << channel.name << std::endl;
+	std::cout << formatDate(2) << "Client#" << client.fd << "(" << client.nickname << ") joined " << channel.name << std::endl;
 	return (0);
 
 }
@@ -84,7 +84,7 @@ int		server::initChannel(int fd, std::string& name)
 	channels_[name] = newChannel;
 	clients_[fd].joinedChannels.insert(name); 
 
-	std::cout << formatDate() << "Client#" << fd << "(" << clients_[fd].nickname << ") created channel: " << name << std::endl;
+	std::cout << formatDate(2) << "Client#" << fd << "(" << clients_[fd].nickname << ") created channel: " << name << std::endl;
 	return (0);
 }
 

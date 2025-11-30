@@ -8,9 +8,13 @@ int server::setUser(Client &client, std::istringstream &iss)
 	std::getline(iss, realname);
 	realname = trim(realname);
 	
-	std::cout << formatDate() << "Client#" << client.fd << " -> USER " << username << " " << hostname << " " << servername << " " << realname << "\n";
-	if (!client.hasPassword) //! you sure about return value?
+	if (!client.hasPassword)
+	{
+		//INVALID - NO PASSWORD YET
+		std::string error = ERR_AUTH_REQUIRED(std::string(SERV), client.nickname);
+		ft_send(client.fd, error);
 		return (0);
+	}
 	if (client.isRegistered == true)
 	{
 		//INVALID - REREGISTRATION

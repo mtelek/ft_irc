@@ -7,13 +7,13 @@ int server::cap(Client &client, std::istringstream &iss)
 	
 	if (subcmd == "LS")
 	{
-		// Send minimal capabilities or none
+		//SEND MINIMAL CAPABILITIES
 		std::string response = "CAP * LS :\r\n";
 		ft_send(client.fd, response);
 	}
 	else if (subcmd == "REQ")
 	{
-		// Acknowledge any requested capabilities
+		//ACKNOWLEDGE ANY REQUESTED CAPABILITIES
 		std::string caps;
 		std::getline(iss, caps);
 		std::string response = "CAP * ACK " + caps + "\r\n";

@@ -17,7 +17,9 @@
 #define E4642(serv,nick) serv + " 4642 " + nick + " :Password incorrect. Disconnecting\r\n"
 #define S467(serv,nick) serv + " 467 " + nick + " :Authentication successful\r\n"
 #define E462(serv,nick) serv + " 462 " + nick + " :You may not reregister\r\n"
+#define ERR_AUTH_REQUIRED(serv, nick) serv + " 463 " + nick + " :Authentication required\r\n"
 #define ERR_NOTREGISTERED(serv, nick) serv + " 451 " + nick + " :You have not registered\r\n"
+#define ERR_PASS_ALREADY_GIVEN(serv, nick) serv + " 466 " + nick + " :Correct password has already been sent\r\n"
 
 //SETNICK
 #define E433(serv,nick) serv + " 433 " + nick + " :Nickname is already in use\r\n"

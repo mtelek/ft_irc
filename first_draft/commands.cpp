@@ -118,8 +118,7 @@ int	server::recieveMessage(std::vector<pollfd> fds, size_t i, char *buffer, ssiz
 	Client& client = clients_[fds[i].fd];
 	client.buffer.append(buffer, bytes);
 
-	std::cout << client.buffer; 
-
+	std::cout << formatDate(2) << "Client#" << i+3 << " -> " << client.buffer; 
 	while (true)
 	{
 		size_t	pos;

@@ -24,7 +24,6 @@ int		server::mode(Client &client, std::istringstream &iss, std::string &cmd)
 		return (-1);
 	}
 
-
 	std::map<std::string, Channel>::iterator it = channels_.find(toLowerString(name));
 	if (it == channels_.end())
 	{
