@@ -22,7 +22,7 @@ int server::isValidName(Client &client, std::string &nickname)
 		ft_send(client.fd, error);
 		return (1);
 	}
-	const std::string forbiddenChars = " ,*?!@#";
+	const std::string forbiddenChars = " ,*?!@#$";
 	for (size_t i = 0; i < nickname.length(); ++i)
 	{
 		//FORBIDDEN CHARACTERS
@@ -40,7 +40,7 @@ int server::isValidName(Client &client, std::string &nickname)
 		ft_send(client.fd, error);
 		return (1);
 	}
-	const std::string Prefixes = "#&@+"; // or just only &
+	const std::string Prefixes = "#&@+";
 	if (Prefixes.find(nickname[0]) != std::string::npos)
 	{
 		//FORBIDDEN PREFIXES

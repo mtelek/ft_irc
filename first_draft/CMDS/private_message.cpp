@@ -68,7 +68,7 @@ int		server::privmsg2Client(Client &client, std::string &target, std::string &me
 	if (target_fd == -1)
 	{
 		std::string err = E401(std::string(SERV), client.nickname, target);
-    	ft_send(client.fd, err);
+		ft_send(client.fd, err);
 		return (-1);
 	}
 	if (!message.empty() && message[0] == ':')
@@ -101,41 +101,53 @@ int		server::ft_send(int fd, std::string &message)	//! maybe change this funcion
 	return (0);
 }
 
+void server::sendToAllClients(Client &sender, const std::string &message)
+{
+	std::string privmsg = ":" + sender.nickname + " PRIVMSG $" + " :" + message + "\r\n";
+	
+	std::map<int, Client>::iterator it;
+	for (it = clients_.begin(); it != clients_.end(); ++it)
+	{
+		if (it->first != sender.fd && it->second.isRegistered)
+			ft_send(it->first, privmsg);
+	}
+}
+
 int server::sendPrivate(Client &client, std::istringstream &iss)
 {
 	std::string target;
 	iss >> target;
 
 	std::string message;
-    std::getline(iss, message);
-    message = trim(message);
+	std::getline(iss, message);
+	message = trim(message);
 	if (!message.empty() && message[0] == ':')
-        message.erase(0, 1);   
+		message.erase(0, 1);   
 
 	if (!client.isRegistered) 
 	{
 		std::string err =  ERR_NOTREGISTERED(std::string(SERV), client.nickname);
 		ft_send(client.fd, err);
 		return (1);
-    }
+	}
 	if (target.find(',') != std::string::npos)
 	{
-        std::string err = ERR_TOOMANYCHAN(std::string(SERV), client.nickname);
+		std::string err = ERR_TOOMANYCHAN(std::string(SERV), client.nickname);
 		ft_send(client.fd, err);
 		return (1);
-    }
-	if (target.empty()) 
+	}
+	if (target.empty())
 	{
-        std::string err = ERR_NORECIPIENT(std::string(SERV), client.nickname, "PRIVMSG");
-    	ft_send(client.fd, err);
+		std::string err = ERR_NORECIPIENT(std::string(SERV), client.nickname, "PRIVMSG");
+		ft_send(client.fd, err);
 		return (1);
-    }
+	}
 	if (message.empty()) 
 	{
 		std::string err = ERR_NOTEXTTOSEND(std::string(SERV), client.nickname);
 		ft_send(client.fd, err);
 		return (1);
-    }
+	}
 	if (!isChannel(target) && target[0] == '#')
 	{
 		std::string err = ERR_NOSUCHCHANNEL(std::string(SERV), client.nickname);
@@ -144,6 +156,8 @@ int server::sendPrivate(Client &client, std::istringstream &iss)
 	}
 	if (isChannel(target))
 		privmsg2Channel(client, target, message);
+	else if (target[0] == '$')
+		sendToAllClients(client, message);
 	else
 		privmsg2Client(client, target, message);
 	return (0);

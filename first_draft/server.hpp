@@ -31,7 +31,7 @@ class server
 	private:
 
 		int				server_fd_;
-		sockaddr_in		server_addr_;    
+		sockaddr_in		server_addr_;
 		int				port_;
 		std::string		password_;
 		std::string		startDate;
@@ -116,6 +116,7 @@ class server
 		int		privmsg2Client(Client &client, std::string &target, std::string &message); 
 		int		ft_send(int fd, std::string &message);
 		int 	sendToAllChannelMembers(Channel &channel, std::string &message);
+		void	sendToAllClients(Client &sender, const std::string &message);
 
 
 		//USER HELPER
